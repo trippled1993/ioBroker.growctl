@@ -1,16 +1,89 @@
 {
-	"i18n": true,
-	"type": "panel",
+	"type": "tabs",
 	"items": {
-		"option1": {
-			"type": "checkbox",
-			"label": "option1",
-			"newLine": true
+		"objectIDs": {
+			"type": "panel",
+			"label": "ObjectIDs",
+			"items": {
+				"objectIDs.CurrentTopTemperature": {
+					"type": "objectId",
+					"label": "Current Top Temperature ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.CurrentTopHumidity": {
+					"type": "objectId",
+					"label": "Current Top Humidity ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.CurrentBottomTemperature": {
+					"type": "objectId",
+					"label": "Current Bottom Temperature ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.CurrentBottomHumidity": {
+					"type": "objectId",
+					"label": "Current Bottom Humidity ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.HeaterOn": {
+					"type": "objectId",
+					"label": "Heater On ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.LightOn": {
+					"type": "objectId",
+					"label": "Light On ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.DehumidifierOn": {
+					"type": "objectId",
+					"label": "Dehumidifier On ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.FanPercent": {
+					"type": "objectId",
+					"label": "Fan Percent ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.HeartbeatFromClient": {
+					"type": "objectId",
+					"label": "Heartbeat From Client ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.HeartbeatToClient": {
+					"type": "objectId",
+					"label": "Heartbeat To Client ObjectID",
+					"sm": 6,
+					"newLine": true
+				}
+			}
 		},
-		"option2": {
-			"type": "text",
-			"label": "option2",
-			"newLine": true
+		"generalSettings": {
+			"type": "panel",
+			"label": "General Settings",
+			"items": {
+				"generalSettings.HeartbeatInterval": {
+					"type": "number",
+					"label": "Heartbeat Interval (s)",
+					"default": 5,
+					"sm": 2
+				},
+				"generalSettings.HeartbeatTimeout": {
+					"type": "number",
+					"label": "Heartbeat Timeout (s)",
+					"default": 20,
+					"sm": 2
+				}
+			}
 		}
 	}
 }
