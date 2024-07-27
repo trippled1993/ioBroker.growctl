@@ -43,6 +43,7 @@ export class AdapterConfig {
 			},
 			generalSettings: {
 				clientHeartbeatTimeout: 0,
+				clientHeartbeatInterval: 0,
 				// add other general settings here
 			},
 		};
