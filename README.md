@@ -126,8 +126,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.0.2-alpha.1 (2024-07-28)
 
 -   Heartbeat-Manager & Intervall Loop Parameter
 
