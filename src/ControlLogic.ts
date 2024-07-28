@@ -3,10 +3,12 @@ import { IAdapterConfig } from "./AdapterConfig";
 import { DehumidifierController } from "./Controller/DehumidifierController";
 import { FanController } from "./Controller/FanController";
 import { HeatingController } from "./Controller/HeatingController";
+import { HeartbeatManager } from "./HeartbeatManager";
 import { IO } from "./Models/IO";
 import { IODefinitions } from "./Models/IODefinitions";
 import { Setpoints } from "./Models/Setpoints";
 
+const CONTROL_LOOP_INTERVAL_DEFAULT = 5000; // Default interval in milliseconds
 /**
  * Die Klasse ControlLogic stellt die Steuerungslogik für den Adapter bereit.
  */
@@ -16,8 +18,11 @@ export class ControlLogic {
 	private interval: NodeJS.Timeout | null = null;
 	private ioDefinitions: IODefinitions;
 	private setpoints: Setpoints;
+	private heartbeatManager: HeartbeatManager;
 	public IsRunning = false;
-
+	private isClientConnected = false;
+	private isInitialized = false;
+	private isControlLoopRunning = false;
 	/**
 	 * Erstellt eine Instanz der ControlLogic Klasse.
 	 * @param adapter - Die Adapterinstanz.
@@ -28,6 +33,12 @@ export class ControlLogic {
 		this.config = config;
 		this.ioDefinitions = new IODefinitions(config, adapter);
 		this.setpoints = new Setpoints(adapter);
+		this.heartbeatManager = new HeartbeatManager(
+			adapter,
+			this.ioDefinitions,
+			config,
+			this.handleHeartbeatChange.bind(this),
+		);
 	}
 
 	/**
@@ -49,10 +60,11 @@ export class ControlLogic {
 			}
 		}
 
-		await this.ioDefinitions.resetAllOutputs();
-		// Start der Steuerungsschleife mit einem festen Zeitintervall (z.B. alle 5 Sekunden)
-		this.interval = setInterval(() => this.controlLoop(), 5000);
-		this.IsRunning = true;
+		// Initialisiere den Heartbeat-Manager
+		this.heartbeatManager.initialize();
+
+		this.isInitialized = true;
+		this.adapter.log.info("Steuerungsschleife initialisiert. Warte auf Heartbeat von Client...");
 	}
 
 	/**
@@ -60,14 +72,24 @@ export class ControlLogic {
 	 * @returns Eine Promise, die nach der Ausführung der Steuerungsschleife aufgelöst wird.
 	 */
 	private async controlLoop(): Promise<void> {
+		if (this.isControlLoopRunning) return; // Wenn die Schleife bereits läuft, nichts tun
+		this.isControlLoopRunning = true; // Sperrvariable setzen
 		try {
 			await this.setpoints.readPoints();
 			await this.ioDefinitions.readAllInputs();
 			await this.ioDefinitions.readAllOutputs();
+
+			// Prüfe und sende den Heartbeat
+			this.heartbeatManager.checkAndSendHeartbeat();
+
+			// Verarbeite die Steuerungslogik
 			this.processLogic();
+
 			await this.ioDefinitions.writeAllOutputs();
 		} catch (error) {
 			this.adapter.log.error("Fehler in der Steuerungsschleife: " + error);
+		} finally {
+			this.isControlLoopRunning = false; // Sperrvariable zurücksetzen
 		}
 	}
 
@@ -103,6 +125,17 @@ export class ControlLogic {
 		this.ioDefinitions.dehumidifierOn.desired = dehumidifierController.shouldActivate() > 50;
 	}
 
+	// Startet die Steuerungsschleife
+	public async start(): Promise<void> {
+		if (this.IsRunning || !this.isInitialized) return;
+		this.adapter.log.info("Steuerungsschleife wird gestartet und alle Ausgänge werden zurückgesetzt.");
+		await this.ioDefinitions.resetAllOutputs();
+		// Start der Steuerungsschleife mit einem festen Zeitintervall (z.B. alle 5 Sekunden)
+		const interval = this.config.generalSettings.controlLoopInterval * 1000 || CONTROL_LOOP_INTERVAL_DEFAULT;
+		this.interval = setInterval(() => this.controlLoop(), interval);
+		this.IsRunning = true;
+	}
+
 	/**
 	 * Beendet die Steuerungsschleife.
 	 * @returns Eine Promise, die nach dem Beenden der Steuerungsschleife aufgelöst wird.
@@ -112,6 +145,28 @@ export class ControlLogic {
 			clearInterval(this.interval);
 			this.interval = null;
 		}
-		if (this.IsRunning) await this.ioDefinitions.resetAllOutputs();
+		if (this.IsRunning) {
+			this.adapter.log.info("Steuerungsschleife wird gestoppt und alle Ausgänge werden zurückgesetzt.");
+			await this.ioDefinitions.resetAllOutputs();
+		}
+		this.IsRunning = false;
+	}
+
+	/**
+	 * Handhabt Änderungen des Heartbeat-Status.
+	 * @param isConnected - Gibt an, ob die Verbindung aktiv ist oder nicht.
+	 */
+	private handleHeartbeatChange(isConnected: boolean): void {
+		this.isClientConnected = isConnected;
+		this.adapter.log.info(
+			`Heartbeat-Status geändert: Client ist jetzt ${this.isClientConnected ? "verbunden" : "getrennt"}.`,
+		);
+		if (this.isClientConnected) {
+			this.adapter.log.debug("Starte Steuerungsschleife aufgrund einer Heartbeat-Änderung.");
+			this.start();
+		} else {
+			this.adapter.log.debug("Stoppe Steuerungsschleife aufgrund einer Heartbeat-Änderung.");
+			this.stop();
+		}
 	}
 }

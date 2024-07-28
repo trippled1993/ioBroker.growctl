@@ -18,7 +18,7 @@ export interface IAdapterConfig {
 	generalSettings: {
 		clientHeartbeatTimeout: number;
 		clientHeartbeatInterval: number;
-		// add other general settings here
+		controlLoopInterval: number; // Intervall in Sekunden
 	};
 }
 
@@ -44,6 +44,7 @@ export class AdapterConfig {
 			generalSettings: {
 				clientHeartbeatTimeout: 0,
 				clientHeartbeatInterval: 0,
+				controlLoopInterval: 5,
 				// add other general settings here
 			},
 		};
@@ -72,6 +73,7 @@ export class AdapterConfig {
 						generalSettings: {
 							clientHeartbeatInterval: obj.native.generalSettings.HeartbeatInterval || 0,
 							clientHeartbeatTimeout: obj.native.generalSettings.HeartbeatTimeout || 0,
+							controlLoopInterval: obj.native.generalSettings.controlLoopInterval || 0,
 							// add other general settings here
 						},
 					};

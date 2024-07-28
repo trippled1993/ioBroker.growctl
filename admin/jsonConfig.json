@@ -82,6 +82,12 @@
 					"label": "Heartbeat Timeout (s)",
 					"default": 20,
 					"sm": 2
+				},
+				"generalSettings.controlLoopInterval": {
+					"type": "number",
+					"label": "ControlLoop Interval (s)",
+					"default": 5,
+					"sm": 2
 				}
 			}
 		}
