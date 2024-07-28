@@ -94,9 +94,8 @@ export class IODefinitions {
 					this.adapter.log.info(
 						`${this.constructor.name} 	| Wert wird geändert: ${io.objectID} von ${io.current} auf ${io.desired}`,
 					);
+					await this.adapter.setForeignStateAsync(io.objectID, io.desired);
 				}
-				// Wert sicherheitshalber immer schreiben. Wenn es ein Cmnd für Tasmota ist, könnte z.B. der Befehl noch in der Variable stehen, aber nicht ausgeführt worden sein.
-				await this.adapter.setForeignStateAsync(io.objectID, io.desired);
 			} catch (error) {
 				console.error(`Error writing desired state for ${io.objectID}:`, error);
 			}
