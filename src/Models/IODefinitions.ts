@@ -16,6 +16,7 @@ export class IODefinitions {
 	heartbeatToClient: Output;
 
 	private adapter: AdapterInstance;
+	private writeCheckDelay = 200; // Wartezeit in ms
 
 	constructor(config: IAdapterConfig, adapter: AdapterInstance) {
 		console.log(config);
@@ -86,7 +87,6 @@ export class IODefinitions {
 		);
 	}
 
-	// Methode um den Desired-Wert aller IOs zu schreiben
 	public async writeAllOutputs(): Promise<void> {
 		for (const io of this.Outputs) {
 			try {
@@ -94,7 +94,7 @@ export class IODefinitions {
 					this.adapter.log.info(
 						`${this.constructor.name} 	| Wert wird geändert: ${io.objectID} von ${io.current} auf ${io.desired}`,
 					);
-					await this.adapter.setForeignStateAsync(io.objectID, io.desired);
+					await this.writeDesiredValue(io);
 				}
 			} catch (error) {
 				console.error(`Error writing desired state for ${io.objectID}:`, error);
@@ -114,5 +114,68 @@ export class IODefinitions {
 		this.adapter.log.debug(
 			`${this.constructor.name} 	| resetAllOutputs durchlaufen: ${this.Outputs.length} IOs zurückgesetzt`,
 		);
+	}
+
+	private async writeDesiredValue(io: any): Promise<void> {
+		let attempts = 0;
+		const maxAttempts = 2;
+		const alternativeValue = "--"; // Behelfsmäßiger Wert
+
+		while (attempts <= maxAttempts) {
+			if (io.current !== io.desired) {
+				this.adapter.log.info(
+					`${this.constructor.name} 	| Wert wird geändert: ${io.objectID} von ${io.current} auf ${io.desired}`,
+				);
+				await this.adapter.setForeignStateAsync(io.objectID, io.desired);
+				await this.delay(this.writeCheckDelay);
+
+				if (await this.isValueWritten(io)) {
+					return; // Wert erfolgreich geschrieben
+				} else {
+					attempts++;
+					if (attempts > maxAttempts) {
+						await this.writeAlternativeValue(io, alternativeValue);
+						return;
+					}
+				}
+			} else {
+				return; // Wert ist bereits korrekt
+			}
+		}
+	}
+
+	private async isValueWritten(io: any): Promise<boolean> {
+		const state = await this.adapter.getForeignStateAsync(io.objectID);
+		if (state && state.val === io.desired) {
+			io.current = state.val;
+			return true;
+		}
+		return false;
+	}
+
+	private async writeAlternativeValue(io: any, alternativeValue: any): Promise<void> {
+		this.adapter.log.warn(
+			`${this.constructor.name} 	| Wert konnte nicht geschrieben werden: ${io.objectID}. Versuche alternativen Wert.`,
+		);
+		await this.adapter.setForeignStateAsync(io.objectID, alternativeValue);
+		await this.delay(this.writeCheckDelay);
+		const altState = await this.adapter.getForeignStateAsync(io.objectID);
+		if (altState && altState.val === alternativeValue) {
+			await this.adapter.setForeignStateAsync(io.objectID, io.desired);
+			await this.delay(this.writeCheckDelay);
+
+			const finalState = await this.adapter.getForeignStateAsync(io.objectID);
+			if (finalState && finalState.val === io.desired) {
+				io.current = finalState.val;
+			} else {
+				throw new Error(`Error writing desired state for ${io.objectID} after alternative value.`);
+			}
+		} else {
+			throw new Error(`Error writing alternative state for ${io.objectID}.`);
+		}
+	}
+
+	private delay(ms: number): Promise<void> {
+		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 }
