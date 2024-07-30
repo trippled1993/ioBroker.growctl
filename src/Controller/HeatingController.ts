@@ -1,25 +1,21 @@
 import { IController } from "./IController";
 
 export class HeatingController implements IController {
-	private tempTop: number;
-	private tempBottom: number;
-	private desiredTemp: number;
-	private tempHyst: number;
+	private isActive: boolean;
 
-	constructor(tempTop: number, tempBottom: number, desiredTemp: number, tempHyst: number) {
-		this.tempTop = tempTop;
-		this.tempBottom = tempBottom;
-		this.desiredTemp = desiredTemp;
-		this.tempHyst = tempHyst;
+	constructor() {
+		this.isActive = false; // Initialer Zustand
 	}
 
-	public shouldActivate(): number {
-		const avgTemp = (this.tempTop + this.tempBottom) / 2;
-		if (avgTemp < this.desiredTemp - this.tempHyst) {
-			return 100; // Vollständig aktivieren
-		} else if (avgTemp > this.desiredTemp + this.tempHyst) {
-			return 0; // Deaktivieren
+	public shouldActivate(tempTop: number, tempBottom: number, desiredTemp: number, tempHyst: number): number {
+		const avgTemp = (tempTop + tempBottom) / 2;
+
+		if (!this.isActive && avgTemp < desiredTemp - tempHyst) {
+			this.isActive = true;
+		} else if (this.isActive && avgTemp > desiredTemp + tempHyst) {
+			this.isActive = false;
 		}
-		return 0; // Deaktivieren
+
+		return this.isActive ? 100 : 0;
 	}
 }

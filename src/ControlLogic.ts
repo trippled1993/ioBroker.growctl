@@ -23,6 +23,11 @@ export class ControlLogic {
 	private isClientConnected = false;
 	private isInitialized = false;
 	private isControlLoopRunning = false;
+
+	private heatingController: HeatingController;
+	private fanController: FanController;
+	private dehumidifierController: DehumidifierController;
+
 	/**
 	 * Erstellt eine Instanz der ControlLogic Klasse.
 	 * @param adapter - Die Adapterinstanz.
@@ -39,6 +44,9 @@ export class ControlLogic {
 			config,
 			this.handleHeartbeatChange.bind(this),
 		);
+		this.heatingController = new HeatingController();
+		this.fanController = new FanController();
+		this.dehumidifierController = new DehumidifierController();
 	}
 
 	/**
@@ -97,14 +105,14 @@ export class ControlLogic {
 	 * Verarbeitet die Steuerungslogik.
 	 */
 	private processLogic(): void {
-		const heatingController = new HeatingController(
-			this.ioDefinitions.currentTopTemperature.current, // tempTop
-			this.ioDefinitions.currentBottomTemperature.current, // tempBottom
-			this.setpoints.desiredTemperature.currentValue, // desiredTemp
-			this.setpoints.desiredTempHysteresis.currentValue, // tempHyst
-		);
-
-		const fanController = new FanController(
+		this.ioDefinitions.heaterOn.desired =
+			this.heatingController.shouldActivate(
+				this.ioDefinitions.currentTopTemperature.current, // tempTop
+				this.ioDefinitions.currentBottomTemperature.current, // tempBottom
+				this.setpoints.desiredTemperature.currentValue, // desiredTemp
+				this.setpoints.desiredTempHysteresis.currentValue, // tempHyst
+			) > 50;
+		this.ioDefinitions.fanPercent.desired = this.fanController.shouldActivate(
 			this.ioDefinitions.currentTopTemperature.current, // tempTop
 			this.ioDefinitions.currentBottomTemperature.current, // tempBottom
 			this.ioDefinitions.currentTopHumidity.current, // humTop
@@ -112,17 +120,16 @@ export class ControlLogic {
 			22, // tempDiffThreshold
 			this.setpoints.desiredHumidity.currentValue, // desiredHum
 			this.setpoints.desiredHumidityHysteresis.currentValue, // humHyst
+			this.setpoints.desiredTemperature.currentValue, // desiredTemp
+			this.setpoints.desiredTempHysteresis.currentValue, // tempHyst
 		);
-		const dehumidifierController = new DehumidifierController(
-			this.ioDefinitions.currentTopHumidity.current, // humTop
-			this.ioDefinitions.currentBottomHumidity.current, // humBottom
-			this.setpoints.desiredHumidity.currentValue, // desiredHum
-			this.setpoints.desiredHumidityHysteresis.currentValue, // humHyst
-		);
-
-		this.ioDefinitions.heaterOn.desired = heatingController.shouldActivate() > 50;
-		this.ioDefinitions.fanPercent.desired = fanController.shouldActivate();
-		this.ioDefinitions.dehumidifierOn.desired = dehumidifierController.shouldActivate() > 50;
+		this.ioDefinitions.dehumidifierOn.desired =
+			this.dehumidifierController.shouldActivate(
+				this.ioDefinitions.currentTopHumidity.current, // humTop
+				this.ioDefinitions.currentBottomHumidity.current, // humBottom
+				this.setpoints.desiredHumidity.currentValue, // desiredHum
+				this.setpoints.desiredHumidityHysteresis.currentValue, // humHyst
+			) > 50;
 	}
 
 	// Startet die Steuerungsschleife

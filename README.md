@@ -15,6 +15,17 @@
 
 Steuerung der Umgebungsdaten
 
+### Beispiel Regeln für ESP (Heartbeat)
+```
+Rule1 ON System#Boot DO backlog teleperiod 5; RuleTimer1 5 ENDON ON Rules#Timer=1 DO backlog Publish dp/B01-SEN/heartbeat/toServer %timestamp%; RuleTimer1 5 ENDON
+Rule1 1
+
+
+Rule2 ON Mem2#State DO backlog var1 %timestamp%; ruletimer2 30 ENDON ON Rules#Timer=2 DO backlog Power1 0; Power2 0; Power3 0; Power4 0; PWM7 0 ENDON
+Rule2 1
+```
+
+
 ## Developer manual
 
 This section is intended for the developer. It can be deleted later.

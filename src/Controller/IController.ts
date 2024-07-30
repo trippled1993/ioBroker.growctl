@@ -1,3 +1,3 @@
 export interface IController {
-	shouldActivate(avgValue: number, additionalValue?: number): number;
+	shouldActivate(...args: any[]): number;
 }

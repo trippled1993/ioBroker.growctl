@@ -91,9 +91,6 @@ export class IODefinitions {
 		for (const io of this.Outputs) {
 			try {
 				if (io.current !== io.desired) {
-					this.adapter.log.info(
-						`${this.constructor.name} 	| Wert wird geändert: ${io.objectID} von ${io.current} auf ${io.desired}`,
-					);
 					await this.writeDesiredValue(io);
 				}
 			} catch (error) {
@@ -122,24 +119,20 @@ export class IODefinitions {
 		const alternativeValue = "--"; // Behelfsmäßiger Wert
 
 		while (attempts <= maxAttempts) {
-			if (io.current !== io.desired) {
-				this.adapter.log.info(
-					`${this.constructor.name} 	| Wert wird geändert: ${io.objectID} von ${io.current} auf ${io.desired}`,
-				);
-				await this.adapter.setForeignStateAsync(io.objectID, io.desired);
-				await this.delay(this.writeCheckDelay);
+			this.adapter.log.info(
+				`${this.constructor.name} 	| Wert wird geändert: ${io.objectID} von ${io.current} auf ${io.desired}`,
+			);
+			await this.adapter.setForeignStateAsync(io.objectID, io.desired);
+			await this.delay(this.writeCheckDelay);
 
-				if (await this.isValueWritten(io)) {
-					return; // Wert erfolgreich geschrieben
-				} else {
-					attempts++;
-					if (attempts > maxAttempts) {
-						await this.writeAlternativeValue(io, alternativeValue);
-						return;
-					}
-				}
+			if (await this.isValueWritten(io)) {
+				return; // Wert erfolgreich geschrieben
 			} else {
-				return; // Wert ist bereits korrekt
+				attempts++;
+				if (attempts > maxAttempts) {
+					await this.writeAlternativeValue(io, alternativeValue);
+					return;
+				}
 			}
 		}
 	}

@@ -1,23 +1,20 @@
 import { IController } from "./IController";
-
 export class DehumidifierController implements IController {
-	private humTop: number;
-	private humBottom: number;
-	private desiredHum: number;
-	private humHyst: number;
+	private isActive: boolean;
 
-	constructor(humTop: number, humBottom: number, desiredHum: number, humHyst: number) {
-		this.humTop = humTop;
-		this.humBottom = humBottom;
-		this.desiredHum = desiredHum;
-		this.humHyst = humHyst;
+	constructor() {
+		this.isActive = false; // Initialer Zustand
 	}
 
-	public shouldActivate(): number {
-		const avgHum = (this.humTop + this.humBottom) / 2;
-		if (avgHum > this.desiredHum + this.humHyst) {
-			return 100; // Vollständig aktivieren
+	public shouldActivate(humTop: number, humBottom: number, desiredHum: number, humHyst: number): number {
+		const avgHum = (humTop + humBottom) / 2;
+
+		if (!this.isActive && avgHum > desiredHum + humHyst) {
+			this.isActive = true;
+		} else if (this.isActive && avgHum < desiredHum - humHyst) {
+			this.isActive = false;
 		}
-		return 0; // Deaktivieren
+
+		return this.isActive ? 100 : 0;
 	}
 }
