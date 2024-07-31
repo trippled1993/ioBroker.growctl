@@ -24,12 +24,20 @@ export class IODefinitions {
 		this.currentTopHumidity = new Input(config.objectIDs.currentTopHumidity);
 		this.currentBottomTemperature = new Input(config.objectIDs.currentBottomTemperature);
 		this.currentBottomHumidity = new Input(config.objectIDs.currentBottomHumidity);
-		this.heaterOn = new Output(config.objectIDs.heaterOn, false);
-		this.lightOn = new Output(config.objectIDs.lightOn, false);
-		this.dehumidifierOn = new Output(config.objectIDs.dehumidifierOn, false);
-		this.fanPercent = new Output(config.objectIDs.fanPercent, 0);
+		this.heaterOn = new Output(config.objectIDs.heaterOnRead, config.objectIDs.heaterOnWrite, false);
+		this.lightOn = new Output(config.objectIDs.lightOnRead, config.objectIDs.lightOnWrite, false);
+		this.dehumidifierOn = new Output(
+			config.objectIDs.dehumidifierOnRead,
+			config.objectIDs.dehumidifierOnWrite,
+			false,
+		);
+		this.fanPercent = new Output(config.objectIDs.fanPercentRead, config.objectIDs.fanPercentWrite, 0);
 		this.heartbeatFromClient = new Input(config.objectIDs.heartbeatFromClient);
-		this.heartbeatToClient = new Output(config.objectIDs.heartbeatToClient, 0);
+		this.heartbeatToClient = new Output(
+			config.objectIDs.heartbeatToClientRead,
+			config.objectIDs.heartbeatToClientWrite,
+			0,
+		);
 		this.adapter = adapter;
 		console.log(this.Inputs);
 	}
@@ -46,17 +54,9 @@ export class IODefinitions {
 	public async readAllInputs(): Promise<void> {
 		for (const io of this.Inputs) {
 			try {
-				const state = await this.adapter.getForeignStateAsync(io.objectID);
-				if (state) {
-					io.current = state.val;
-				} else {
-					console.warn(`State for ${io.objectID} not found.`);
-				}
-				this.adapter.log.silly(
-					`${this.constructor.name} 	| readAllInputs durchlaufen: ${io.objectID} - Current: ${io.current}`,
-				);
+				await this.readIO(io, true);
 			} catch (error) {
-				console.error(`Error reading state for ${io.objectID}:`, error);
+				console.error(`Error reading state for ${io.ReadOID}:`, error);
 			}
 		}
 		this.adapter.log.debug(
@@ -68,18 +68,16 @@ export class IODefinitions {
 	public async readAllOutputs(): Promise<void> {
 		for (const io of this.Outputs) {
 			try {
-				const state = await this.adapter.getForeignStateAsync(io.objectID);
+				const state = await this.readIO(io);
 				if (state) {
 					io.current = state.val;
 					io.desired = state.val; // wird mit Input vorbelegt
-				} else {
-					console.warn(`State for ${io.objectID} not found.`);
 				}
 				this.adapter.log.silly(
-					`${this.constructor.name} 	| readAllOutputs durchlaufen: ${io.objectID} - Current: ${io.current} - Desired: ${io.desired}`,
+					`${this.constructor.name} 	| readAllOutputs durchlaufen: ${io.ReadOID} - Current: ${io.current} - Desired: ${io.desired}`,
 				);
 			} catch (error) {
-				console.error(`Error reading state for ${io.objectID}:`, error);
+				console.error(`Error reading state for ${io.ReadOID}:`, error);
 			}
 		}
 		this.adapter.log.debug(
@@ -91,10 +89,10 @@ export class IODefinitions {
 		for (const io of this.Outputs) {
 			try {
 				if (io.current !== io.desired) {
-					await this.writeDesiredValue(io);
+					await this.writeIO(io, io.desired);
 				}
 			} catch (error) {
-				console.error(`Error writing desired state for ${io.objectID}:`, error);
+				console.error(`Error writing desired state for ${io.WriteOID}:`, error);
 			}
 		}
 		this.adapter.log.debug(
@@ -113,58 +111,68 @@ export class IODefinitions {
 		);
 	}
 
-	private async writeDesiredValue(io: any): Promise<void> {
-		let attempts = 0;
-		const maxAttempts = 2;
-		const alternativeValue = "--"; // Behelfsmäßiger Wert
-
-		while (attempts <= maxAttempts) {
-			this.adapter.log.info(
-				`${this.constructor.name} 	| Wert wird geändert: ${io.objectID} von ${io.current} auf ${io.desired}`,
-			);
-			await this.adapter.setForeignStateAsync(io.objectID, io.desired);
-			await this.delay(this.writeCheckDelay);
-
-			if (await this.isValueWritten(io)) {
-				return; // Wert erfolgreich geschrieben
-			} else {
-				attempts++;
-				if (attempts > maxAttempts) {
-					await this.writeAlternativeValue(io, alternativeValue);
-					return;
-				}
-			}
-		}
-	}
-
-	private async isValueWritten(io: any): Promise<boolean> {
-		const state = await this.adapter.getForeignStateAsync(io.objectID);
-		if (state && state.val === io.desired) {
+	private async isValueWritten(io: Output, value: any): Promise<boolean> {
+		const state = await this.adapter.getForeignStateAsync(io.WriteOID);
+		if (state && state.val === value) {
 			io.current = state.val;
 			return true;
 		}
 		return false;
 	}
 
-	private async writeAlternativeValue(io: any, alternativeValue: any): Promise<void> {
-		this.adapter.log.warn(
-			`${this.constructor.name} 	| Wert konnte nicht geschrieben werden: ${io.objectID}. Versuche alternativen Wert.`,
-		);
-		await this.adapter.setForeignStateAsync(io.objectID, alternativeValue);
-		await this.delay(this.writeCheckDelay);
-		const altState = await this.adapter.getForeignStateAsync(io.objectID);
-		if (altState && altState.val === alternativeValue) {
-			await this.adapter.setForeignStateAsync(io.objectID, io.desired);
-			await this.delay(this.writeCheckDelay);
-
-			const finalState = await this.adapter.getForeignStateAsync(io.objectID);
-			if (finalState && finalState.val === io.desired) {
-				io.current = finalState.val;
+	// Funktion um IO zu lesen, Default parameter "Update"= true. Wenn Update gesetzt, wird auch der Wert in IO aktualisiert, sonst nur zurückgegeben
+	public async readIO(io: Input | Output, update = false): Promise<any> {
+		try {
+			const state = await this.adapter.getForeignStateAsync(io.ReadOID);
+			if (state) {
+				if (update) {
+					io.current = state.val;
+					this.adapter.log.silly(
+						`${this.constructor.name} 	| readIO, Value aktualisiert: ${io.ReadOID} - Current: ${io.current}`,
+					);
+				}
+				return state.val;
 			} else {
-				throw new Error(`Error writing desired state for ${io.objectID} after alternative value.`);
+				console.warn(`State for ${io.ReadOID} not found.`);
+				throw new Error(`State for ${io.ReadOID} not found.`);
 			}
-		} else {
-			throw new Error(`Error writing alternative state for ${io.objectID}.`);
+		} catch (error) {
+			console.error(`Error reading state for ${io.ReadOID}:`, error);
+			throw error;
+		}
+	}
+
+	// Funktion um IO zu schreiben
+	public async writeIO(io: Output, value: any, attempts = 0): Promise<void> {
+		try {
+			const maxAttempts = 2;
+			const alternativeValue = "--"; // Behelfsmäßiger Wert
+
+			while (attempts <= maxAttempts) {
+				this.adapter.log.info(
+					`${this.constructor.name} 	| Wert wird geändert: ${io.WriteOID} von ${io.current} auf ${value} (Versuch ${attempts + 1})`,
+				);
+				await this.adapter.setForeignStateAsync(io.WriteOID, value);
+				await this.delay(this.writeCheckDelay);
+
+				if (await this.isValueWritten(io, value)) {
+					return; // Wert erfolgreich geschrieben
+				} else {
+					attempts++;
+					if (attempts == maxAttempts) {
+						await this.writeIO(io, alternativeValue, attempts);
+						await this.writeIO(io, value, attempts);
+						return;
+					} else if (attempts > maxAttempts) {
+						this.adapter.log.error(
+							`${this.constructor.name} 	| Wert konnte nicht geschrieben werden: ${io.WriteOID} von ${io.current} auf ${value}`,
+						);
+						return;
+					}
+				}
+			}
+		} catch (error) {
+			console.error(`Error writing desired state for ${io.WriteOID}:`, error);
 		}
 	}
 

@@ -29,29 +29,53 @@
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.HeaterOn": {
+				"objectIDs.HeaterOnRead": {
 					"type": "objectId",
-					"label": "Heater On ObjectID",
+					"label": "Heater On Read ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.LightOn": {
+				"objectIDs.HeaterOnWrite": {
 					"type": "objectId",
-					"label": "Light On ObjectID",
+					"label": "Heater On Write ObjectID",
+					"sm": 6,
+					"newLine": false
+				},
+				"objectIDs.LightOnRead": {
+					"type": "objectId",
+					"label": "Light On Read ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.DehumidifierOn": {
+				"objectIDs.LightOnWrite": {
 					"type": "objectId",
-					"label": "Dehumidifier On ObjectID",
+					"label": "Light On Write ObjectID",
+					"sm": 6,
+					"newLine": false
+				},
+				"objectIDs.DehumidifierOnRead": {
+					"type": "objectId",
+					"label": "Dehumidifier On Read ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.FanPercent": {
+				"objectIDs.DehumidifierOnWrite": {
 					"type": "objectId",
-					"label": "Fan Percent ObjectID",
+					"label": "Dehumidifier On Write ObjectID",
+					"sm": 6,
+					"newLine": false
+				},
+				"objectIDs.FanPercentRead": {
+					"type": "objectId",
+					"label": "Fan Percent Read ObjectID",
 					"sm": 6,
 					"newLine": true
+				},
+				"objectIDs.FanPercentWrite": {
+					"type": "objectId",
+					"label": "Fan Percent Write ObjectID",
+					"sm": 6,
+					"newLine": false
 				},
 				"objectIDs.HeartbeatFromClient": {
 					"type": "objectId",
@@ -59,11 +83,17 @@
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.HeartbeatToClient": {
+				"objectIDs.heartbeatToClientRead": {
 					"type": "objectId",
-					"label": "Heartbeat To Client ObjectID",
+					"label": "Heartbeat To Client Read ObjectID",
 					"sm": 6,
 					"newLine": true
+				},
+				"objectIDs.heartbeatToClientWrite": {
+					"type": "objectId",
+					"label": "Heartbeat To Client Write ObjectID",
+					"sm": 6,
+					"newLine": false
 				}
 			}
 		},

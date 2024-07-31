@@ -1,10 +1,14 @@
 export abstract class IO {
-	objectID: string;
+	private _readObjectID: string;
 	current: any;
 
 	constructor(objectID: string) {
-		this.objectID = objectID;
+		this._readObjectID = objectID;
 		this.current = null;
+	}
+
+	get ReadOID(): string {
+		return this._readObjectID;
 	}
 }
 
@@ -17,10 +21,16 @@ export class Input extends IO {
 export class Output extends IO {
 	desired: any;
 	default: any;
+	private _writeObjectID: string;
 
-	constructor(objectID: string, defaultValue: any = null) {
-		super(objectID);
+	constructor(readObjectID: string, writeObjectID: string, defaultValue: any = null) {
+		super(readObjectID);
+		this._writeObjectID = writeObjectID || readObjectID;
 		this.desired = null;
 		this.default = defaultValue;
+	}
+
+	get WriteOID(): string {
+		return this._writeObjectID;
 	}
 }

@@ -55,16 +55,16 @@ export class ControlLogic {
 	 */
 	public async initialize(): Promise<void> {
 		// Prüfe, ob alle ioDefinitions vorhanden sind
-		if (!this.ioDefinitions.Inputs.every((io) => io.objectID)) {
+		if (!this.ioDefinitions.Inputs.every((io) => io.ReadOID)) {
 			throw new Error("Nicht alle Eingänge wurden konfiguriert.");
 		}
 
 		// Prüfe, ob alle ioDefinition-ObjektIDs in ioBroker existieren
 		const allIOs: IO[] = [...this.ioDefinitions.Inputs, ...this.ioDefinitions.Outputs];
 		for (const io of allIOs) {
-			const state = await this.adapter.getForeignStateAsync(io.objectID);
+			const state = await this.ioDefinitions.readIO(io);
 			if (!state) {
-				throw new Error(`State ${io.objectID} nicht gefunden.`);
+				throw new Error(`State ${io.ReadOID} nicht gefunden.`);
 			}
 		}
 

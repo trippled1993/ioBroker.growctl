@@ -42,9 +42,9 @@ export class HeartbeatManager {
 	}
 
 	private subscribeToHeartbeat(): void {
-		this.adapter.subscribeForeignStates(this.ioDefinitions.heartbeatFromClient.objectID);
+		this.adapter.subscribeForeignStates(this.ioDefinitions.heartbeatFromClient.ReadOID);
 		this.adapter.on("stateChange", (id, state) => {
-			if (id === this.ioDefinitions.heartbeatFromClient.objectID && state && !this.isConnected) {
+			if (id === this.ioDefinitions.heartbeatFromClient.ReadOID && state && !this.isConnected) {
 				this.checkHeartbeat(String(state.val));
 			}
 		});
@@ -80,7 +80,7 @@ export class HeartbeatManager {
 	private async getCurrentHeartbeat(currentHeartbeat: string | null): Promise<string | null> {
 		if (!currentHeartbeat) {
 			try {
-				const state = await this.adapter.getForeignStateAsync(this.ioDefinitions.heartbeatFromClient.objectID);
+				const state = await this.ioDefinitions.readIO(this.ioDefinitions.heartbeatFromClient);
 				return state ? String(state.val) : "";
 			} catch (err) {
 				this.adapter.log.error("Heartbeat konnte nicht ausgelesen werden ..." + err);
