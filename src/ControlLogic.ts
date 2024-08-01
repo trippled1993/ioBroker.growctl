@@ -65,10 +65,7 @@ export class ControlLogic {
 		// Prüfe, ob alle ioDefinition-ObjektIDs in ioBroker existieren
 		const allIOs: IO[] = [...this.ioDefinitions.Inputs, ...this.ioDefinitions.Outputs];
 		for (const io of allIOs) {
-			const state = await this.ioDefinitions.readIO(io);
-			if (state == null) {
-				throw new Error(`State ${io.ReadOID} nicht gefunden.`);
-			}
+			await this.ioDefinitions.readIO(io);
 		}
 
 		// Initialisiere den Heartbeat-Manager
