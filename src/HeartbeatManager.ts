@@ -81,7 +81,7 @@ export class HeartbeatManager {
 		if (!currentHeartbeat) {
 			try {
 				const state = await this.ioDefinitions.readIO(this.ioDefinitions.heartbeatFromClient);
-				return state ? String(state.val) : "";
+				return state ? String(state) : "";
 			} catch (err) {
 				this.adapter.log.error("Heartbeat konnte nicht ausgelesen werden ..." + err);
 				return this.previousHeartbeatFromClient;

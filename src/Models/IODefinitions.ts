@@ -68,11 +68,10 @@ export class IODefinitions {
 	public async readAllOutputs(): Promise<void> {
 		for (const io of this.Outputs) {
 			try {
-				const state = await this.readIO(io);
-				if (state) {
-					io.current = state.val;
-					io.desired = state.val; // wird mit Input vorbelegt
-				}
+				await this.readIO(io, true);
+
+				io.desired = io.current; // wird mit Input vorbelegt
+
 				this.adapter.log.silly(
 					`${this.constructor.name} 	| readAllOutputs durchlaufen: ${io.ReadOID} - Current: ${io.current} - Desired: ${io.desired}`,
 				);
@@ -128,7 +127,7 @@ export class IODefinitions {
 				if (update) {
 					io.current = state.val;
 					this.adapter.log.silly(
-						`${this.constructor.name} 	| readIO, Value aktualisiert: ${io.ReadOID} - Current: ${io.current}`,
+						`${this.constructor.name} 	| readIO, Value aktualisiert: ${io.ReadOID} - Current: ${io.current} Datentyp: ${typeof io.current}`,
 					);
 				}
 				return state.val;
