@@ -7,12 +7,17 @@ export interface IAdapterConfig {
 		currentTopHumidity: string;
 		currentBottomTemperature: string;
 		currentBottomHumidity: string;
-		heaterOn: string;
-		lightOn: string;
-		dehumidifierOn: string;
-		fanPercent: string;
+		heaterOnRead: string;
+		heaterOnWrite: string;
+		lightOnRead: string;
+		lightOnWrite: string;
+		dehumidifierOnRead: string;
+		dehumidifierOnWrite: string;
+		fanPercentRead: string;
+		fanPercentWrite: string;
 		heartbeatFromClient: string;
-		heartbeatToClient: string;
+		heartbeatToClientRead: string;
+		heartbeatToClientWrite: string;
 		[key: string]: string;
 	};
 	generalSettings: {
@@ -34,12 +39,17 @@ export class AdapterConfig {
 				currentTopHumidity: "",
 				currentBottomTemperature: "",
 				currentBottomHumidity: "",
-				heaterOn: "",
-				lightOn: "",
-				dehumidifierOn: "",
-				fanPercent: "",
+				heaterOnRead: "",
+				heaterOnWrite: "",
+				lightOnRead: "",
+				lightOnWrite: "",
+				dehumidifierOnRead: "",
+				dehumidifierOnWrite: "",
+				fanPercentRead: "",
+				fanPercentWrite: "",
 				heartbeatFromClient: "",
-				heartbeatToClient: "",
+				heartbeatToClientRead: "",
+				heartbeatToClientWrite: "",
 			},
 			generalSettings: {
 				clientHeartbeatTimeout: 0,
@@ -59,16 +69,21 @@ export class AdapterConfig {
 				} else if (obj && obj.native) {
 					this.config = {
 						objectIDs: {
-							currentTopTemperature: obj.native.objectIDs.CurrentTopTemperature || "",
-							currentTopHumidity: obj.native.objectIDs.CurrentTopHumidity || "",
-							currentBottomTemperature: obj.native.objectIDs.CurrentBottomTemperature || "",
-							currentBottomHumidity: obj.native.objectIDs.CurrentBottomHumidity || "",
-							heaterOn: obj.native.objectIDs.HeaterOn || "",
-							lightOn: obj.native.objectIDs.LightOn || "",
-							dehumidifierOn: obj.native.objectIDs.DehumidifierOn || "",
-							fanPercent: obj.native.objectIDs.FanPercent || "",
-							heartbeatFromClient: obj.native.objectIDs.HeartbeatFromClient || "",
-							heartbeatToClient: obj.native.objectIDs.HeartbeatToClient || "",
+							currentTopTemperature: obj.native.objectIDs.currentTopTemperature || "",
+							currentTopHumidity: obj.native.objectIDs.currentTopHumidity || "",
+							currentBottomTemperature: obj.native.objectIDs.currentBottomTemperature || "",
+							currentBottomHumidity: obj.native.objectIDs.currentBottomHumidity || "",
+							heaterOnRead: obj.native.objectIDs.heaterOnRead || "",
+							heaterOnWrite: obj.native.objectIDs.heaterOnWrite || "",
+							lightOnRead: obj.native.objectIDs.lightOnRead || "",
+							lightOnWrite: obj.native.objectIDs.lightOnWrite || "",
+							dehumidifierOnRead: obj.native.objectIDs.dehumidifierOnRead || "",
+							dehumidifierOnWrite: obj.native.objectIDs.dehumidifierOnWrite || "",
+							fanPercentRead: obj.native.objectIDs.fanPercentRead || "",
+							fanPercentWrite: obj.native.objectIDs.fanPercentWrite || "",
+							heartbeatFromClient: obj.native.objectIDs.heartbeatFromClient || "",
+							heartbeatToClientRead: obj.native.objectIDs.heartbeatToClientRead || "",
+							heartbeatToClientWrite: obj.native.objectIDs.heartbeatToClientWrite || "",
 						},
 						generalSettings: {
 							clientHeartbeatInterval: obj.native.generalSettings.HeartbeatInterval || 0,

@@ -5,79 +5,79 @@
 			"type": "panel",
 			"label": "ObjectIDs",
 			"items": {
-				"objectIDs.CurrentTopTemperature": {
+				"objectIDs.currentTopTemperature": {
 					"type": "objectId",
 					"label": "Current Top Temperature ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.CurrentTopHumidity": {
+				"objectIDs.currentTopHumidity": {
 					"type": "objectId",
 					"label": "Current Top Humidity ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.CurrentBottomTemperature": {
+				"objectIDs.currentBottomTemperature": {
 					"type": "objectId",
 					"label": "Current Bottom Temperature ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.CurrentBottomHumidity": {
+				"objectIDs.currentBottomHumidity": {
 					"type": "objectId",
 					"label": "Current Bottom Humidity ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.HeaterOnRead": {
+				"objectIDs.heaterOnRead": {
 					"type": "objectId",
 					"label": "Heater On Read ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.HeaterOnWrite": {
+				"objectIDs.heaterOnWrite": {
 					"type": "objectId",
 					"label": "Heater On Write ObjectID",
 					"sm": 6,
 					"newLine": false
 				},
-				"objectIDs.LightOnRead": {
+				"objectIDs.lightOnRead": {
 					"type": "objectId",
 					"label": "Light On Read ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.LightOnWrite": {
+				"objectIDs.lightOnWrite": {
 					"type": "objectId",
 					"label": "Light On Write ObjectID",
 					"sm": 6,
 					"newLine": false
 				},
-				"objectIDs.DehumidifierOnRead": {
+				"objectIDs.dehumidifierOnRead": {
 					"type": "objectId",
 					"label": "Dehumidifier On Read ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.DehumidifierOnWrite": {
+				"objectIDs.dehumidifierOnWrite": {
 					"type": "objectId",
 					"label": "Dehumidifier On Write ObjectID",
 					"sm": 6,
 					"newLine": false
 				},
-				"objectIDs.FanPercentRead": {
+				"objectIDs.fanPercentRead": {
 					"type": "objectId",
 					"label": "Fan Percent Read ObjectID",
 					"sm": 6,
 					"newLine": true
 				},
-				"objectIDs.FanPercentWrite": {
+				"objectIDs.fanPercentWrite": {
 					"type": "objectId",
 					"label": "Fan Percent Write ObjectID",
 					"sm": 6,
 					"newLine": false
 				},
-				"objectIDs.HeartbeatFromClient": {
+				"objectIDs.heartbeatFromClient": {
 					"type": "objectId",
 					"label": "Heartbeat From Client ObjectID",
 					"sm": 6,
