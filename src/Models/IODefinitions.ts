@@ -124,7 +124,7 @@ export class IODefinitions {
 	public async readIO(io: Input | Output, update = false): Promise<any> {
 		try {
 			const state = await this.adapter.getForeignStateAsync(io.ReadOID);
-			if (state) {
+			if (state != null) {
 				if (update) {
 					io.current = state.val;
 					this.adapter.log.silly(
