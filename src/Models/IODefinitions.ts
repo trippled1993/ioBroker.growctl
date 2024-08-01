@@ -111,7 +111,7 @@ export class IODefinitions {
 	}
 
 	private async isValueWritten(io: Output, value: any): Promise<boolean> {
-		const state = await this.adapter.getForeignStateAsync(io.WriteOID);
+		const state = await this.adapter.getForeignStateAsync(io.ReadOID);
 		if (state && state.val === value) {
 			io.current = state.val;
 			return true;
