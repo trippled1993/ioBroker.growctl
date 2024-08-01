@@ -58,6 +58,9 @@ export class ControlLogic {
 		if (!this.ioDefinitions.Inputs.every((io) => io.ReadOID)) {
 			throw new Error("Nicht alle Eingänge wurden konfiguriert.");
 		}
+		if (!this.ioDefinitions.Outputs.every((io) => io.ReadOID)) {
+			throw new Error("Nicht alle Ausgänge wurden konfiguriert.");
+		}
 
 		// Prüfe, ob alle ioDefinition-ObjektIDs in ioBroker existieren
 		const allIOs: IO[] = [...this.ioDefinitions.Inputs, ...this.ioDefinitions.Outputs];
