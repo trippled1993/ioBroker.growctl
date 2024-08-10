@@ -3,6 +3,36 @@ import { IAdapterConfig } from "../AdapterConfig";
 
 import { Input, Output } from "./IO";
 
+// Klasse die Funktionen zum generieren von Validierungsfunktionen enthält
+export class Validation {
+	// Funktion um zu prüfen ob ein Wert eine Zahl ist
+	static isNumber(): (value: any) => boolean {
+		return (value: any): boolean => {
+			return typeof value === "number";
+		};
+	}
+
+	// Funktion um zu prüfen ob ein Wert eine Zahl ist und im Bereich von 0-100 liegt
+	static isPercent(): (value: any) => boolean {
+		return (value: any): boolean => {
+			return Validation.isNumber()(value) && value >= 0 && value <= 100;
+		};
+	}
+
+	//Funktion um zu prüfen ob ein Wert eine Zahl ist und im angegebenen Bereich liegt
+	static isInRange(min: number, max: number): (value: any) => boolean {
+		return (value: any): boolean => {
+			return Validation.isNumber()(value) && value >= min && value <= max;
+		};
+	}
+
+	// Funktion um zu prüfen ob ein Wert eine Zahl ist und im Bereich von 0-100 liegt
+	static isBoolean(): (value: any) => boolean {
+		return (value: any): boolean => {
+			return typeof value === "boolean";
+		};
+	}
+}
 export class IODefinitions {
 	currentTopTemperature: Input;
 	currentTopHumidity: Input;
@@ -20,18 +50,37 @@ export class IODefinitions {
 
 	constructor(config: IAdapterConfig, adapter: AdapterInstance) {
 		console.log(config);
-		this.currentTopTemperature = new Input(config.objectIDs.currentTopTemperature);
-		this.currentTopHumidity = new Input(config.objectIDs.currentTopHumidity);
-		this.currentBottomTemperature = new Input(config.objectIDs.currentBottomTemperature);
-		this.currentBottomHumidity = new Input(config.objectIDs.currentBottomHumidity);
-		this.heaterOn = new Output(config.objectIDs.heaterOnRead, config.objectIDs.heaterOnWrite, false);
-		this.lightOn = new Output(config.objectIDs.lightOnRead, config.objectIDs.lightOnWrite, false);
+		this.currentTopTemperature = new Input(config.objectIDs.currentTopTemperature, Validation.isInRange(-20, 70));
+		this.currentTopHumidity = new Input(config.objectIDs.currentTopHumidity, Validation.isPercent());
+		this.currentBottomTemperature = new Input(
+			config.objectIDs.currentBottomTemperature,
+			Validation.isInRange(-20, 70),
+		);
+		this.currentBottomHumidity = new Input(config.objectIDs.currentBottomHumidity, Validation.isPercent());
+		this.heaterOn = new Output(
+			config.objectIDs.heaterOnRead,
+			config.objectIDs.heaterOnWrite,
+			false,
+			Validation.isBoolean(),
+		);
+		this.lightOn = new Output(
+			config.objectIDs.lightOnRead,
+			config.objectIDs.lightOnWrite,
+			false,
+			Validation.isBoolean(),
+		);
 		this.dehumidifierOn = new Output(
 			config.objectIDs.dehumidifierOnRead,
 			config.objectIDs.dehumidifierOnWrite,
 			false,
+			Validation.isBoolean(),
 		);
-		this.fanPercent = new Output(config.objectIDs.fanPercentRead, config.objectIDs.fanPercentWrite, 0);
+		this.fanPercent = new Output(
+			config.objectIDs.fanPercentRead,
+			config.objectIDs.fanPercentWrite,
+			0,
+			Validation.isPercent(),
+		);
 		this.heartbeatFromClient = new Input(config.objectIDs.heartbeatFromClient);
 		this.heartbeatToClient = new Output(
 			config.objectIDs.heartbeatToClientRead,
@@ -129,6 +178,11 @@ export class IODefinitions {
 					this.adapter.log.silly(
 						`${this.constructor.name} 	| readIO, Value aktualisiert: ${io.ReadOID} - Current: ${io.current} Datentyp: ${typeof io.current}`,
 					);
+					if (!io.valid) {
+						this.adapter.log.error(
+							`${this.constructor.name} 	| readIO, Value invalid: ${io.ReadOID} - Current: ${io.current}`,
+						);
+					}
 				}
 				return state.val;
 			} else {
