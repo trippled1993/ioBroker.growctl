@@ -6,12 +6,23 @@ export class DehumidifierController implements IController {
 		this.isActive = false; // Initialer Zustand
 	}
 
-	public shouldActivate(humTop: number, humBottom: number, desiredHum: number, humHyst: number): number {
+	public shouldActivate(
+		humTop: number,
+		humBottom: number,
+		desiredHum: number,
+		humHyst: number,
+		maxTemp: number,
+	): number {
 		const avgHum = (humTop + humBottom) / 2;
 
 		if (!this.isActive && avgHum > desiredHum + humHyst) {
 			this.isActive = true;
 		} else if (this.isActive && avgHum < desiredHum - humHyst) {
+			this.isActive = false;
+		}
+
+		// Wenn die maximale Temperatur erreicht ist, deaktiviere den Entfeuchter
+		if (avgHum >= maxTemp) {
 			this.isActive = false;
 		}
 

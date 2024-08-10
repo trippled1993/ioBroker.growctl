@@ -3,6 +3,7 @@ import { IAdapterConfig } from "./AdapterConfig";
 import { DehumidifierController } from "./Controller/DehumidifierController";
 import { FanController } from "./Controller/FanController";
 import { HeatingController } from "./Controller/HeatingController";
+import { LampController } from "./Controller/LampController";
 import { HeartbeatManager } from "./HeartbeatManager";
 import { IO } from "./Models/IO";
 import { IODefinitions } from "./Models/IODefinitions";
@@ -27,6 +28,7 @@ export class ControlLogic {
 	private heatingController: HeatingController;
 	private fanController: FanController;
 	private dehumidifierController: DehumidifierController;
+	private lampController: LampController;
 
 	/**
 	 * Erstellt eine Instanz der ControlLogic Klasse.
@@ -47,6 +49,7 @@ export class ControlLogic {
 		this.heatingController = new HeatingController();
 		this.fanController = new FanController();
 		this.dehumidifierController = new DehumidifierController();
+		this.lampController = new LampController();
 	}
 
 	/**
@@ -111,17 +114,19 @@ export class ControlLogic {
 				this.ioDefinitions.currentBottomTemperature.current, // tempBottom
 				this.setpoints.desiredTemperature.currentValue, // desiredTemp
 				this.setpoints.desiredTempHysteresis.currentValue, // tempHyst
+				this.setpoints.maxTemperature.currentValue, // maxTemp
 			) > 50;
 		this.ioDefinitions.fanPercent.desired = this.fanController.shouldActivate(
 			this.ioDefinitions.currentTopTemperature.current, // tempTop
 			this.ioDefinitions.currentBottomTemperature.current, // tempBottom
 			this.ioDefinitions.currentTopHumidity.current, // humTop
 			this.ioDefinitions.currentBottomHumidity.current, // humBottom
-			22, // tempDiffThreshold
-			this.setpoints.desiredHumidity.currentValue, // desiredHum
-			this.setpoints.desiredHumidityHysteresis.currentValue, // humHyst
+			this.setpoints.tempDiffThreshold.currentValue, // tempDiffThreshold
 			this.setpoints.desiredTemperature.currentValue, // desiredTemp
 			this.setpoints.desiredTempHysteresis.currentValue, // tempHyst
+			this.setpoints.maxTemperature.currentValue, // maxTemp
+			this.setpoints.maxHumidity.currentValue, // maxHumidity
+			this.setpoints.fanMinPercent.currentValue, // fanMinPercent
 		);
 		this.ioDefinitions.dehumidifierOn.desired =
 			this.dehumidifierController.shouldActivate(
@@ -129,6 +134,14 @@ export class ControlLogic {
 				this.ioDefinitions.currentBottomHumidity.current, // humBottom
 				this.setpoints.desiredHumidity.currentValue, // desiredHum
 				this.setpoints.desiredHumidityHysteresis.currentValue, // humHyst
+				this.setpoints.maxTemperature.currentValue, // maxTemp
+			) > 50;
+		this.ioDefinitions.lightOn.desired =
+			this.lampController.shouldActivate(
+				this.setpoints.lightsOnDuration.currentValue, // lightsOnDuration
+				this.setpoints.maxTemperature.currentValue, // maxTemp
+				this.ioDefinitions.currentTopTemperature.current, // tempTop
+				this.ioDefinitions.currentBottomTemperature.current, // tempBottom
 			) > 50;
 	}
 

@@ -24,6 +24,11 @@ export class Setpoints {
 	desiredLightingDuration: Setpoint;
 	desiredTempHysteresis: Setpoint;
 	desiredHumidityHysteresis: Setpoint;
+	maxTemperature: Setpoint;
+	maxHumidity: Setpoint;
+	fanMinPercent: Setpoint;
+	tempDiffThreshold: Setpoint;
+	lightsOnDuration: Setpoint;
 
 	private adapter: AdapterInstance;
 
@@ -42,6 +47,11 @@ export class Setpoints {
 			"Gewünschte Luftfeuchtigkeithysterese",
 			0,
 		);
+		this.maxTemperature = new Setpoint("MaxTemperature", "Maximale Temperatur", 0);
+		this.maxHumidity = new Setpoint("MaxHumidity", "Maximale Luftfeuchtigkeit", 0);
+		this.fanMinPercent = new Setpoint("FanMinPercent", "Minimale Lüfterdrehzahl in Prozent", 0);
+		this.tempDiffThreshold = new Setpoint("TempDiffThreshold", "Abweichung von Temperatur oben/unten", 0);
+		this.lightsOnDuration = new Setpoint("LightsOnDuration", "Leuchtdauer in Stunden pro Tag", 0);
 	}
 
 	/**
