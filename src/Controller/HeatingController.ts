@@ -17,7 +17,7 @@ export class HeatingController implements IController {
 	): number {
 		// Überprüfe, ob alle Input-Objekte gültig sind
 		if (!tempTop.valid || !tempBottom.valid) {
-			throw new Error("Ungültige Eingabewerte");
+			throw new Error(`${this.constructor.name} 	| Ungültige Eingabewerte`);
 		}
 
 		// Extrahiere die Werte aus den Input-Objekten

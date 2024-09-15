@@ -70,6 +70,8 @@ export class ControlLogic {
 		for (const io of allIOs) {
 			await this.ioDefinitions.readIO(io);
 		}
+		// Erstelle alle Objekte für die IOs
+		this.ioDefinitions.createObjects();
 
 		// Initialisiere den Heartbeat-Manager
 		this.heartbeatManager.initialize();
@@ -87,6 +89,7 @@ export class ControlLogic {
 		this.isControlLoopRunning = true; // Sperrvariable setzen
 		try {
 			await this.setpoints.readPoints();
+			this.setScalabeInputValues();
 			await this.ioDefinitions.readAllInputs();
 			await this.ioDefinitions.readAllOutputs();
 
@@ -104,18 +107,36 @@ export class ControlLogic {
 		}
 	}
 
+	private setScalabeInputValues(): void {
+		// Min/Max für Skalierbare Eingänge setzen
+		this.ioDefinitions.moistureRaw1.min = this.setpoints.Moisture1Min.currentValue;
+		this.ioDefinitions.moistureRaw1.max = this.setpoints.Moisture1Max.currentValue;
+		this.ioDefinitions.moistureRaw2.min = this.setpoints.Moisture2Min.currentValue;
+		this.ioDefinitions.moistureRaw2.max = this.setpoints.Moisture2Max.currentValue;
+		this.ioDefinitions.moistureRaw3.min = this.setpoints.Moisture3Min.currentValue;
+		this.ioDefinitions.moistureRaw3.max = this.setpoints.Moisture3Max.currentValue;
+		this.ioDefinitions.moistureRaw4.min = this.setpoints.Moisture4Min.currentValue;
+		this.ioDefinitions.moistureRaw4.max = this.setpoints.Moisture4Max.currentValue;
+		this.ioDefinitions.moistureRaw5.min = this.setpoints.Moisture5Min.currentValue;
+		this.ioDefinitions.moistureRaw5.max = this.setpoints.Moisture5Max.currentValue;
+		this.ioDefinitions.moistureRaw6.min = this.setpoints.Moisture6Min.currentValue;
+		this.ioDefinitions.moistureRaw6.max = this.setpoints.Moisture6Max.currentValue;
+	}
+
 	/**
 	 * Verarbeitet die Steuerungslogik.
 	 */
 	private processLogic(): void {
+		this.adapter.log.debug(`${this.constructor.name} 	| processLogic gestartet..`);
 		this.ioDefinitions.heaterOn.desired =
 			this.heatingController.shouldActivate(
-				this.ioDefinitions.currentTopTemperature.current, // tempTop
-				this.ioDefinitions.currentBottomTemperature.current, // tempBottom
+				this.ioDefinitions.currentTopTemperature, // tempTop
+				this.ioDefinitions.currentBottomTemperature, // tempBottom
 				this.setpoints.desiredTemperature.currentValue, // desiredTemp
 				this.setpoints.desiredTempHysteresis.currentValue, // tempHyst
 				this.setpoints.maxTemperature.currentValue, // maxTemp
 			) > 50;
+		this.adapter.log.debug(`${this.constructor.name} 	| heaterOn: ${this.ioDefinitions.heaterOn.desired}`);
 		this.ioDefinitions.fanPercent.desired = this.fanController.shouldActivate(
 			this.ioDefinitions.currentTopTemperature.current, // tempTop
 			this.ioDefinitions.currentBottomTemperature.current, // tempBottom
@@ -128,6 +149,7 @@ export class ControlLogic {
 			this.setpoints.maxHumidity.currentValue, // maxHumidity
 			this.setpoints.fanMinPercent.currentValue, // fanMinPercent
 		);
+		this.adapter.log.debug(`${this.constructor.name} 	| fanPercent: ${this.ioDefinitions.fanPercent.desired}`);
 		this.ioDefinitions.dehumidifierOn.desired =
 			this.dehumidifierController.shouldActivate(
 				this.ioDefinitions.currentTopHumidity.current, // humTop
@@ -136,6 +158,9 @@ export class ControlLogic {
 				this.setpoints.desiredHumidityHysteresis.currentValue, // humHyst
 				this.setpoints.maxTemperature.currentValue, // maxTemp
 			) > 50;
+		this.adapter.log.debug(
+			`${this.constructor.name} 	| dehumidifierOn: ${this.ioDefinitions.dehumidifierOn.desired}`,
+		);
 		this.ioDefinitions.lightOn.desired =
 			this.lampController.shouldActivate(
 				this.setpoints.lightsOnDuration.currentValue, // lightsOnDuration
@@ -143,6 +168,8 @@ export class ControlLogic {
 				this.ioDefinitions.currentTopTemperature.current, // tempTop
 				this.ioDefinitions.currentBottomTemperature.current, // tempBottom
 			) > 50;
+		this.adapter.log.debug(`${this.constructor.name} 	| lightOn: ${this.ioDefinitions.lightOn.desired}`);
+		this.adapter.log.debug(`${this.constructor.name} 	| processLogic beendet.`);
 	}
 
 	// Startet die Steuerungsschleife

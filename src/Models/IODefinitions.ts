@@ -1,7 +1,7 @@
 import { AdapterInstance } from "@iobroker/adapter-core"; // Importiere den Adapter-Typ
 import { IAdapterConfig } from "../AdapterConfig";
 
-import { Input, Output } from "./IO";
+import { Input, Output, ScalableInput } from "./IO";
 
 // Klasse die Funktionen zum generieren von Validierungsfunktionen enthält
 export class Validation {
@@ -38,6 +38,12 @@ export class IODefinitions {
 	currentTopHumidity: Input;
 	currentBottomTemperature: Input;
 	currentBottomHumidity: Input;
+	moistureRaw1: ScalableInput;
+	moistureRaw2: ScalableInput;
+	moistureRaw3: ScalableInput;
+	moistureRaw4: ScalableInput;
+	moistureRaw5: ScalableInput;
+	moistureRaw6: ScalableInput;
 	heaterOn: Output;
 	lightOn: Output;
 	dehumidifierOn: Output;
@@ -50,39 +56,99 @@ export class IODefinitions {
 
 	constructor(config: IAdapterConfig, adapter: AdapterInstance) {
 		console.log(config);
-		this.currentTopTemperature = new Input(config.objectIDs.currentTopTemperature, Validation.isInRange(-20, 70));
-		this.currentTopHumidity = new Input(config.objectIDs.currentTopHumidity, Validation.isPercent());
+		this.currentTopTemperature = new Input(
+			"Temperature.Top",
+			config.objectIDs.currentTopTemperature,
+			Validation.isInRange(-20, 70),
+		);
+		this.currentTopHumidity = new Input(
+			"Humidity.Top",
+			config.objectIDs.currentTopHumidity,
+			Validation.isPercent(),
+		);
 		this.currentBottomTemperature = new Input(
+			"Temperature.Bottom",
 			config.objectIDs.currentBottomTemperature,
 			Validation.isInRange(-20, 70),
 		);
-		this.currentBottomHumidity = new Input(config.objectIDs.currentBottomHumidity, Validation.isPercent());
+		this.currentBottomHumidity = new Input(
+			"Humidity.Bottom",
+			config.objectIDs.currentBottomHumidity,
+			Validation.isPercent(),
+		);
+		this.moistureRaw1 = new ScalableInput(
+			"Moisture.1",
+			config.objectIDs.moistureRaw1,
+			0,
+			4000,
+			Validation.isInRange(0, 5000),
+		);
+		this.moistureRaw2 = new ScalableInput(
+			"Moisture.2",
+			config.objectIDs.moistureRaw2,
+			0,
+			4000,
+			Validation.isInRange(0, 5000),
+		);
+		this.moistureRaw3 = new ScalableInput(
+			"Moisture.3",
+			config.objectIDs.moistureRaw3,
+			0,
+			4000,
+			Validation.isInRange(0, 5000),
+		);
+		this.moistureRaw4 = new ScalableInput(
+			"Moisture.4",
+			config.objectIDs.moistureRaw4,
+			0,
+			4000,
+			Validation.isInRange(0, 5000),
+		);
+		this.moistureRaw5 = new ScalableInput(
+			"Moisture.5",
+			config.objectIDs.moistureRaw5,
+			0,
+			4000,
+			Validation.isInRange(0, 5000),
+		);
+		this.moistureRaw6 = new ScalableInput(
+			"Moisture.6",
+			config.objectIDs.moistureRaw6,
+			0,
+			4000,
+			Validation.isInRange(0, 5000),
+		);
 		this.heaterOn = new Output(
+			"Output.HeaterOn",
 			config.objectIDs.heaterOnRead,
 			config.objectIDs.heaterOnWrite,
 			false,
 			Validation.isBoolean(),
 		);
 		this.lightOn = new Output(
+			"Output.LightOn",
 			config.objectIDs.lightOnRead,
 			config.objectIDs.lightOnWrite,
 			false,
 			Validation.isBoolean(),
 		);
 		this.dehumidifierOn = new Output(
+			"Output.DehumidifierOn",
 			config.objectIDs.dehumidifierOnRead,
 			config.objectIDs.dehumidifierOnWrite,
 			false,
 			Validation.isBoolean(),
 		);
 		this.fanPercent = new Output(
+			"Output.FanPercent",
 			config.objectIDs.fanPercentRead,
 			config.objectIDs.fanPercentWrite,
 			0,
 			Validation.isPercent(),
 		);
-		this.heartbeatFromClient = new Input(config.objectIDs.heartbeatFromClient);
+		this.heartbeatFromClient = new Input("Heartbeat.FromClient", config.objectIDs.heartbeatFromClient);
 		this.heartbeatToClient = new Output(
+			"Heartbeat.ToClient",
 			config.objectIDs.heartbeatToClientRead,
 			config.objectIDs.heartbeatToClientWrite,
 			0,
@@ -97,6 +163,62 @@ export class IODefinitions {
 	}
 	public get Outputs(): Output[] {
 		return Object.values(this).filter((io) => io instanceof Output) as Output[];
+	}
+
+	// Methode um Objekte für alle IOs im Adapter zu erstellen
+	public async createObjects(): Promise<void> {
+		for (const io of this.Inputs) {
+			await this.createIOObject(io);
+		}
+		for (const io of this.Outputs) {
+			await this.createIOObject(io);
+		}
+	}
+
+	// Methode um ein Objekt für einen IO zu erstellen
+	// Als Name des Objekts wird der Instanzname des IOs verwendet
+	// Wenn es ein Output ist, wird der Typ anhand des Default Wertes gesetzt. Sonst auf "number"
+	// Wenn es ein Output ist, wird der Wert beschreibbar gesetzt
+	private async createIOObject(io: ScalableInput | Input | Output): Promise<void> {
+		await this.adapter.setObjectNotExistsAsync(io.IOName, {
+			type: "state",
+			common: {
+				name: io.IOName,
+				type: io instanceof Output ? (typeof io.default === "boolean" ? "boolean" : "number") : "number",
+				role: "value",
+				read: true,
+				write: io instanceof Output,
+				def: io instanceof Output ? io.default : null,
+			},
+			native: {},
+		});
+		await this.adapter.setObjectNotExistsAsync(io.ValidName, {
+			type: "state",
+			common: {
+				name: io.ValidName,
+				type: "boolean",
+				role: "value",
+				read: true,
+				write: false,
+				def: false,
+			},
+			native: {},
+		});
+		if (io instanceof ScalableInput) {
+			await this.adapter.setObjectNotExistsAsync(io.ScaledName, {
+				type: "state",
+				common: {
+					name: io.ScaledName,
+					type: "number",
+					role: "value",
+					read: true,
+					write: false,
+					def: null,
+				},
+				native: {},
+			});
+		}
+		this.adapter.log.debug(`${this.constructor.name} 	| createIOObject durchlaufen: ${io.IOName} erstellt`);
 	}
 
 	// Methode um den Wert aller IOs einzulesen
@@ -163,6 +285,8 @@ export class IODefinitions {
 		const state = await this.adapter.getForeignStateAsync(io.ReadOID);
 		if (state && state.val === value) {
 			io.current = state.val;
+			// Wert in IObroker schreiben
+			this.adapter.setState(io.IOName, { val: io.current, ack: true });
 			return true;
 		}
 		return false;
@@ -175,6 +299,18 @@ export class IODefinitions {
 			if (state) {
 				if (update) {
 					io.current = state.val;
+
+					// Wenn Typ ScalableInput, dann auch skalierten Wert schreiben
+					if (io instanceof ScalableInput) {
+						this.adapter.setState(io.ScaledName, { val: io.current, ack: true });
+						this.adapter.setState(io.IOName, { val: io.getRawValue(), ack: true });
+					} else {
+						// Wert in IObroker schreiben
+						this.adapter.setState(io.IOName, { val: io.current, ack: true });
+					}
+					// Valid status schreiben
+					this.adapter.setState(io.ValidName, { val: io.valid, ack: true });
+
 					this.adapter.log.silly(
 						`${this.constructor.name} 	| readIO, Value aktualisiert: ${io.ReadOID} - Current: ${io.current} Datentyp: ${typeof io.current}`,
 					);

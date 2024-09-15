@@ -29,6 +29,18 @@ export class Setpoints {
 	fanMinPercent: Setpoint;
 	tempDiffThreshold: Setpoint;
 	lightsOnDuration: Setpoint;
+	Moisture1Min: Setpoint;
+	Moisture1Max: Setpoint;
+	Moisture2Min: Setpoint;
+	Moisture2Max: Setpoint;
+	Moisture3Min: Setpoint;
+	Moisture3Max: Setpoint;
+	Moisture4Min: Setpoint;
+	Moisture4Max: Setpoint;
+	Moisture5Min: Setpoint;
+	Moisture5Max: Setpoint;
+	Moisture6Min: Setpoint;
+	Moisture6Max: Setpoint;
 
 	private adapter: AdapterInstance;
 
@@ -52,6 +64,18 @@ export class Setpoints {
 		this.fanMinPercent = new Setpoint("FanMinPercent", "Minimale Lüfterdrehzahl in Prozent", 0);
 		this.tempDiffThreshold = new Setpoint("TempDiffThreshold", "Abweichung von Temperatur oben/unten", 0);
 		this.lightsOnDuration = new Setpoint("LightsOnDuration", "Leuchtdauer in Stunden pro Tag", 0);
+		this.Moisture1Min = new Setpoint("Moisture1Min", "Feuchtigkeitssensor 1 Min", 0);
+		this.Moisture1Max = new Setpoint("Moisture1Max", "Feuchtigkeitssensor 1 Max", 0);
+		this.Moisture2Min = new Setpoint("Moisture2Min", "Feuchtigkeitssensor 2 Min", 0);
+		this.Moisture2Max = new Setpoint("Moisture2Max", "Feuchtigkeitssensor 2 Max", 0);
+		this.Moisture3Min = new Setpoint("Moisture3Min", "Feuchtigkeitssensor 3 Min", 0);
+		this.Moisture3Max = new Setpoint("Moisture3Max", "Feuchtigkeitssensor 3 Max", 0);
+		this.Moisture4Min = new Setpoint("Moisture4Min", "Feuchtigkeitssensor 4 Min", 0);
+		this.Moisture4Max = new Setpoint("Moisture4Max", "Feuchtigkeitssensor 4 Max", 0);
+		this.Moisture5Min = new Setpoint("Moisture5Min", "Feuchtigkeitssensor 5 Min", 0);
+		this.Moisture5Max = new Setpoint("Moisture5Max", "Feuchtigkeitssensor 5 Max", 0);
+		this.Moisture6Min = new Setpoint("Moisture6Min", "Feuchtigkeitssensor 6 Min", 0);
+		this.Moisture6Max = new Setpoint("Moisture6Max", "Feuchtigkeitssensor 6 Max", 0);
 	}
 
 	/**

@@ -7,6 +7,12 @@ export interface IAdapterConfig {
 		currentTopHumidity: string;
 		currentBottomTemperature: string;
 		currentBottomHumidity: string;
+		moistureRaw1: string;
+		moistureRaw2: string;
+		moistureRaw3: string;
+		moistureRaw4: string;
+		moistureRaw5: string;
+		moistureRaw6: string;
 		heaterOnRead: string;
 		heaterOnWrite: string;
 		lightOnRead: string;
@@ -21,8 +27,8 @@ export interface IAdapterConfig {
 		[key: string]: string;
 	};
 	generalSettings: {
-		clientHeartbeatTimeout: number;
-		clientHeartbeatInterval: number;
+		clientHeartbeatTimeout: number; // Intervall in Sekunden
+		clientHeartbeatInterval: number; // Intervall in Sekunden
 		controlLoopInterval: number; // Intervall in Sekunden
 	};
 }
@@ -39,6 +45,12 @@ export class AdapterConfig {
 				currentTopHumidity: "",
 				currentBottomTemperature: "",
 				currentBottomHumidity: "",
+				moistureRaw1: "",
+				moistureRaw2: "",
+				moistureRaw3: "",
+				moistureRaw4: "",
+				moistureRaw5: "",
+				moistureRaw6: "",
 				heaterOnRead: "",
 				heaterOnWrite: "",
 				lightOnRead: "",
@@ -73,6 +85,12 @@ export class AdapterConfig {
 							currentTopHumidity: obj.native.objectIDs.currentTopHumidity || "",
 							currentBottomTemperature: obj.native.objectIDs.currentBottomTemperature || "",
 							currentBottomHumidity: obj.native.objectIDs.currentBottomHumidity || "",
+							moistureRaw1: obj.native.objectIDs.moistureRaw1 || "",
+							moistureRaw2: obj.native.objectIDs.moistureRaw2 || "",
+							moistureRaw3: obj.native.objectIDs.moistureRaw3 || "",
+							moistureRaw4: obj.native.objectIDs.moistureRaw4 || "",
+							moistureRaw5: obj.native.objectIDs.moistureRaw5 || "",
+							moistureRaw6: obj.native.objectIDs.moistureRaw6 || "",
 							heaterOnRead: obj.native.objectIDs.heaterOnRead || "",
 							heaterOnWrite: obj.native.objectIDs.heaterOnWrite || "",
 							lightOnRead: obj.native.objectIDs.lightOnRead || "",
@@ -86,8 +104,8 @@ export class AdapterConfig {
 							heartbeatToClientWrite: obj.native.objectIDs.heartbeatToClientWrite || "",
 						},
 						generalSettings: {
-							clientHeartbeatInterval: obj.native.generalSettings.HeartbeatInterval || 0,
-							clientHeartbeatTimeout: obj.native.generalSettings.HeartbeatTimeout || 0,
+							clientHeartbeatInterval: obj.native.generalSettings.clientHeartbeatInterval || 0,
+							clientHeartbeatTimeout: obj.native.generalSettings.clientHeartbeatTimeout || 0,
 							controlLoopInterval: obj.native.generalSettings.controlLoopInterval || 0,
 							// add other general settings here
 						},

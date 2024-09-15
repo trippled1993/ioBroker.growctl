@@ -29,6 +29,42 @@
 					"sm": 6,
 					"newLine": true
 				},
+				"objectIDs.moistureRaw1": {
+					"type": "objectId",
+					"label": "Moisture Sensor 1 ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.moistureRaw2": {
+					"type": "objectId",
+					"label": "Moisture Sensor 2 ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.moistureRaw3": {
+					"type": "objectId",
+					"label": "Moisture Sensor 3 ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.moistureRaw4": {
+					"type": "objectId",
+					"label": "Moisture Sensor 4 ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.moistureRaw5": {
+					"type": "objectId",
+					"label": "Moisture Sensor 5 ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
+				"objectIDs.moistureRaw6": {
+					"type": "objectId",
+					"label": "Moisture Sensor 6 ObjectID",
+					"sm": 6,
+					"newLine": true
+				},
 				"objectIDs.heaterOnRead": {
 					"type": "objectId",
 					"label": "Heater On Read ObjectID",
@@ -101,13 +137,13 @@
 			"type": "panel",
 			"label": "General Settings",
 			"items": {
-				"generalSettings.HeartbeatInterval": {
+				"generalSettings.clientHeartbeatInterval": {
 					"type": "number",
 					"label": "Heartbeat Interval (s)",
 					"default": 5,
 					"sm": 2
 				},
-				"generalSettings.HeartbeatTimeout": {
+				"generalSettings.clientHeartbeatTimeout": {
 					"type": "number",
 					"label": "Heartbeat Timeout (s)",
 					"default": 20,

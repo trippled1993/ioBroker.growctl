@@ -1,14 +1,23 @@
 export abstract class IO {
 	private _readObjectID: string;
-	private _current: any;
+	protected _current: any;
+	protected _name: string;
 	valid: boolean;
 	private validationFn?: (value: any) => boolean;
 
-	constructor(objectID: string, validationFn?: (value: any) => boolean) {
+	constructor(name: string, objectID: string, validationFn?: (value: any) => boolean) {
+		this._name = name;
 		this._readObjectID = objectID;
 		this._current = null;
 		this.valid = false;
 		this.validationFn = validationFn;
+	}
+
+	get IOName(): string {
+		return "IO." + this._name + ".Value";
+	}
+	get ValidName(): string {
+		return "IO." + this._name + ".Valid";
 	}
 
 	get ReadOID(): string {
@@ -23,7 +32,7 @@ export abstract class IO {
 		this.valid = this.isValid(value);
 	}
 
-	private isValid(value: any): boolean {
+	protected isValid(value: any): boolean {
 		const defaultValidation = value !== null && value !== undefined;
 		if (defaultValidation && this.validationFn) {
 			return defaultValidation && this.validationFn(value);
@@ -33,8 +42,54 @@ export abstract class IO {
 }
 
 export class Input extends IO {
-	constructor(objectID: string, validationFn?: (value: any) => boolean) {
-		super(objectID, validationFn);
+	constructor(name: string, objectID: string, validationFn?: (value: any) => boolean) {
+		super(name, objectID, validationFn);
+	}
+}
+
+// Klasse ScalableInput erbt von Input. Sie erweitert Input um die Eigenschaften "min" und "max". Der Output erfolgt in %. Min = 0%, Max = 100%. Außerdem wird eine Methode "scale" hinzugefügt.
+export class ScalableInput extends Input {
+	public min: number;
+	public max: number;
+
+	constructor(name: string, objectID: string, min: number, max: number, validationFn?: (value: any) => boolean) {
+		super(name, objectID, validationFn);
+		this.min = min;
+		this.max = max;
+	}
+
+	get IOName(): string {
+		return "IO." + this._name + ".Raw";
+	}
+
+	get ScaledName(): string {
+		return "IO." + this._name + ".Value";
+	}
+
+	getScaledValue(): number {
+		// Prüfen ob max > min und current zwischen min und max liegt
+		if (this.max <= this.min) {
+			return -99;
+		}
+		if (this._current < this.min) {
+			return 0;
+		}
+		if (this._current > this.max) {
+			return 100;
+		}
+		return ((this._current - this.min) / (this.max - this.min)) * 100;
+	}
+	//Überschreibt getter current um skalierten Wert zurückzugeben
+	get current(): any {
+		return this.getScaledValue();
+	}
+	set current(value: any) {
+		this._current = value;
+		this.valid = this.isValid(value);
+	}
+
+	getRawValue(): number {
+		return this._current;
 	}
 }
 
@@ -44,12 +99,13 @@ export class Output extends IO {
 	private _writeObjectID: string;
 
 	constructor(
+		name: string,
 		readObjectID: string,
 		writeObjectID: string,
 		defaultValue: any = null,
 		validationFn?: (value: any) => boolean,
 	) {
-		super(readObjectID, validationFn);
+		super(name, readObjectID, validationFn);
 		this._writeObjectID = writeObjectID || readObjectID;
 		this.desired = null;
 		this.default = defaultValue;

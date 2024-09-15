@@ -28,7 +28,7 @@ export class HeartbeatManager {
 
 	public initialize(): void {
 		this.startHeartbeatTimeout();
-		this.nextHeartbeatTime = Date.now() + this.config.generalSettings.clientHeartbeatInterval;
+		this.nextHeartbeatTime = Date.now() + this.config.generalSettings.clientHeartbeatInterval * 1000;
 		this.subscribeToHeartbeat();
 		this.checkHeartbeat(null);
 	}
@@ -113,7 +113,7 @@ export class HeartbeatManager {
 	public checkAndSendHeartbeat(): void {
 		if (this.nextHeartbeatTime !== null && Date.now() >= this.nextHeartbeatTime) {
 			this.ioDefinitions.heartbeatToClient.desired = Date.now();
-			this.nextHeartbeatTime = Date.now() + this.config.generalSettings.clientHeartbeatInterval;
+			this.nextHeartbeatTime = Date.now() + this.config.generalSettings.clientHeartbeatInterval * 1000;
 		}
 	}
 }
