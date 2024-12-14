@@ -154,6 +154,17 @@
 					"label": "ControlLoop Interval (s)",
 					"default": 5,
 					"sm": 2
+				},
+				"generalSettings.measurementSource": {
+					"type": "select",
+					"options": [
+						{ "label": { "en": "Oben" }, "value": "top" },
+						{ "label": { "en": "Unten" }, "value": "bottom" },
+						{ "label": { "en": "Mittelwert" }, "value": "mean" }
+					],
+					"label": "ControlLoop Interval (s)",
+					"default": "mean",
+					"sm": 2
 				}
 			}
 		}

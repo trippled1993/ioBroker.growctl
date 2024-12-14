@@ -30,6 +30,7 @@ export interface IAdapterConfig {
 		clientHeartbeatTimeout: number; // Intervall in Sekunden
 		clientHeartbeatInterval: number; // Intervall in Sekunden
 		controlLoopInterval: number; // Intervall in Sekunden
+		measurementSource: "bottom" | "top" | "mean";
 	};
 }
 
@@ -67,6 +68,7 @@ export class AdapterConfig {
 				clientHeartbeatTimeout: 0,
 				clientHeartbeatInterval: 0,
 				controlLoopInterval: 5,
+				measurementSource: "mean",
 				// add other general settings here
 			},
 		};
@@ -107,6 +109,7 @@ export class AdapterConfig {
 							clientHeartbeatInterval: obj.native.generalSettings.clientHeartbeatInterval || 0,
 							clientHeartbeatTimeout: obj.native.generalSettings.clientHeartbeatTimeout || 0,
 							controlLoopInterval: obj.native.generalSettings.controlLoopInterval || 0,
+							measurementSource: obj.native.generalSettings.measurementSource || "mean",
 							// add other general settings here
 						},
 					};

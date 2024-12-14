@@ -10,8 +10,8 @@ export class FanController implements IController {
 	public shouldActivate(
 		tempTop: number,
 		tempBottom: number,
-		humTop: number,
-		humBottom: number,
+		hum: number,
+		temp: number,
 		tempDiffThreshold: number,
 		desiredTemp: number,
 		tempHyst: number,
@@ -20,8 +20,6 @@ export class FanController implements IController {
 		fanMinPercent: number,
 	): number {
 		const tempDifference = Math.abs(tempTop - tempBottom);
-		const avgHum = (humTop + humBottom) / 2;
-		const avgTemp = (tempTop + tempBottom) / 2;
 
 		const fanSpeedMin = fanMinPercent;
 		let fanSpeedTempDiff = 0;
@@ -34,15 +32,15 @@ export class FanController implements IController {
 		}
 
 		// Zweiter Fall: Temperatur zu hoch. Lüfter abhängig von Temperaturabweichung regeln.
-		const tempExcess = avgTemp - desiredTemp;
+		const tempExcess = temp - desiredTemp;
 		// Temperatur übersteigt hysterese oder Lüfter wurde bereits eingeschaltet
-		if (avgTemp > desiredTemp + tempHyst || wasOnByTemp) {
+		if (temp > desiredTemp + tempHyst || wasOnByTemp) {
 			// Regelung Lüfter zwischen 20 & 100% (100% bei doppelter Hysterese)
 			fanSpeedTemp = Math.min(100, 20 + (tempExcess / (tempHyst * 2)) * 80);
 			wasOnByTemp = true;
 		}
 		// Bei unterschreiten der Hysterese, Flag zurücksetzen
-		if (avgTemp < desiredTemp - tempHyst) {
+		if (temp < desiredTemp - tempHyst) {
 			wasOnByTemp = false;
 			fanSpeedTemp = 0;
 		}
@@ -51,11 +49,11 @@ export class FanController implements IController {
 		this.isActive = Math.max(fanSpeedTempDiff, fanSpeedTemp, fanSpeedMin);
 
 		// Wenn die maximale Temperatur erreicht ist, Lüfter 100%
-		if (avgTemp >= maxTemp) {
+		if (temp >= maxTemp) {
 			this.isActive = 100;
 		}
 		//wenn die maximale Luftfeuchtigkeit erreicht ist, Lüfter deaktivieren
-		if (avgHum >= maxHumidity) {
+		if (hum >= maxHumidity) {
 			this.isActive = 0;
 		}
 

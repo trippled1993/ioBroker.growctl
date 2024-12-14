@@ -7,12 +7,7 @@ export class LampController implements IController {
 		this.isActive = false; // Initialer Zustand
 	}
 
-	public shouldActivate(
-		lightDuration: number,
-		tempMax: number,
-		currentTopTemperature: number,
-		currentBottomTemperature: number,
-	): number {
+	public shouldActivate(lightDuration: number, tempMax: number, temp: number): number {
 		const currentHour = new Date().getHours();
 		const halfDuration = lightDuration / 2;
 		const startHour = (24 - halfDuration) % 24;
@@ -25,7 +20,7 @@ export class LampController implements IController {
 		}
 
 		// Wenn die durchschnittliche Temperatur den Maximalwert überschreitet, schalte die Lampe aus
-		if ((currentBottomTemperature + currentTopTemperature) / 2 > tempMax) {
+		if (temp > tempMax) {
 			this.isActive = false;
 		}
 
