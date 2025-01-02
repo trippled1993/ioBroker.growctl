@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "growctl",
-    "version": "0.0.2-alpha.1",
+    "version": "1.0.0",
     "news": {
+      "1.0.0": {
+        "en": "Split Output in Read/Write OIDs\nfeature: Example esp BerryScript SensorBox\nFeature: Prozessbeschreibung\nFeature: Ist-Wert Validierung\nFeature: Feuchtesensoren\nFeature: ESP Autoexec\nFeature: Parameter MeasurementSource\nallgemeine Verbesserungen, Struktur etc.",
+        "de": "Split Ausgabe in Lese-/Lese-OIDs\nfunktion: Beispiel esp BerryScript SensorBox\nFunktion: Prozessbeschreibung\nFeature: Ist-Wertvalidierung\nBesonderheit: Feuchtesensoren\nFeature: ESP Autoexec\nFeature: Parameter-Messquelle\nverbesserung, Struktur usw.",
+        "ru": "Выделить вывод в Чтение / Написать ОИД\nособенность: Пример esp BerryScript SensorBox\nОсобенность: Prozessbeschreibung\nОсобенность: Ist-Wert Validierung\nОсобенность: Feuchtesensoren\nОсобенность: ESP Autoexec\nОсобенность: Параметры измерения\nallgemeine Verbesserungen, Struktur etc.",
+        "pt": "Saída dividida em OIDs de leitura/escritura\nrecurso: Exemplo esp BerryScript SensorBox\nCaracterística: Prozessbeschreibung\nCaracterística: Ist-Wert Validierung\nCaracterística: Feuchtesensoren\nCaracterística: ESP Autoexec\nCaracterística: Medição do parâmetroFonte\nallgemeine Verbesserungen, Struktur etc.",
+        "nl": "Uitvoer splitsen in OID's lezen/schrijven\nfunctie: Voorbeeld esp BerryScript Sensorbox\nFunctie: Prozessbeschreibung\nFunctie: Ist-Wert Validierung\nFeature: Feuchtesensoren\nFunctie: ESP Autoexec\nFunctie: ParametermetingBron\nallgemeine Verbesserungen, Struktur enz.",
+        "fr": "Diviser la sortie dans les OID de lecture/écriture\ncaractéristique: Exemple esp BerryScript SensorBox\nFonctionnalité: Prozessbeschreibung\nCaractéristique: Ist-Wert Valdierung\nCaractéristique: Feuchtesensoren\nFonctionnalité: ESP Autoexec\nCaractéristique : Mesure du paramètreSource\nallgemeine Verbesserungen, Struktur etc.",
+        "it": "Uscita divisa in OID lettura / scrittura\ncaratteristica: Esempio esp BerryScript SensorBox\nCaratteristica: Prozessbeschreibung\nCaratteristica: Ist-Wert Validierung\nCaratteristica: Feuchtesensoren\nCaratteristica: ESP Autoexec\nCaratteristica: Parameter MeasurementSource\nallgemeine Verbesserungen, Struktur ecc.",
+        "es": "Salida de Split en OIDs Read/Write\nfunción: Ejemplo esp BerryScript SensorBox\nCaracterística: Prozessbeschreibung\nCaracterística: Ist-Wert Validierung\nCaracterística: Feuchtesensoren\nCaracterística: ESP Autoexec\nCaracterística: Medición del parámetroFuente\nallgemeine Verbesserungen, Struktur etc.",
+        "pl": "Split wyjściowy w odczycie / zapisu OID\nfunkcja: Przykład esp BerryScript SensorBox\nMotyw: Prozessbeschreibung\nCecha: Ist- Wert Validierung\nMotyw: Feuchtesensoren\nCecha: ESP Autoexec\nCecha: Pomiar parametru Źródło\nallgemeine Verbesserungen, Struktur itp.",
+        "uk": "Розділіть вихід в Читання / Вписати OIDs\nособливості: Приклад Esp BerryScript SensorBox\nХарактеристика: Prozesbeschreibung\nХарактеристика: Ist-Wert Validierung\nХарактеристика: Feuchtesensoren\nХарактеристика: ESP Autoexec\nХарактеристика: Параметр Вимірювання\nallgemeine Verbesserungen, Struktur і т.д.",
+        "zh-cn": "在读/写 OID 中分割输出\n特性 : esp Berry 脚本传感器框\n特征:Prozessbeschreibung\n特征: Ist-Wert viviviierung\n特征: Feuchtesensoren\n特性: ESP 自动执行\n特征: 参数测量来源\n(原始内容存档于2018-09-26). Allgemeine Verbesserungen, Struktur等."
+      },
       "0.0.2-alpha.1": {
         "en": "Heartbeat-Manager & Intervall Loop Parameter",
         "de": "Herzschlag-Manager & Intervall Loop Parameter",
