@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "growctl",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "news": {
+      "1.0.1": {
+        "en": "Debug Log\nDebug Labels\nDebug Scaled Values",
+        "de": "Einloggen\nIn den Warenkorb\nDebug Skalierte Werte",
+        "ru": "Журнал\nОтладочные этикетки\nОтладка",
+        "pt": "Log de depuração\nEtiquetas de depuração\nValores dimensionados de depuração",
+        "nl": "Debuglog\nDebug-labels\nDebuggeschaalde waarden",
+        "fr": "Registre de débogage\nÉtiquettes de débogage\nValeurs de débogage",
+        "it": "Debug Log\nEtichette di debito\nValori scalati del debito",
+        "es": "Debug Log\nDebug Labels\nDebug Valores escalados",
+        "pl": "Dziennik debugowania\nEtykiety debugowania\nWartości skalowane",
+        "uk": "Логін\nЕтикетки Debug\nDebug масштабовані значення",
+        "zh-cn": "除错日志\n调试标签\n调试缩放值"
+      },
       "1.0.0": {
         "en": "Split Output in Read/Write OIDs\nfeature: Example esp BerryScript SensorBox\nFeature: Prozessbeschreibung\nFeature: Ist-Wert Validierung\nFeature: Feuchtesensoren\nFeature: ESP Autoexec\nFeature: Parameter MeasurementSource\nallgemeine Verbesserungen, Struktur etc.",
         "de": "Split Ausgabe in Lese-/Lese-OIDs\nfunktion: Beispiel esp BerryScript SensorBox\nFunktion: Prozessbeschreibung\nFeature: Ist-Wertvalidierung\nBesonderheit: Feuchtesensoren\nFeature: ESP Autoexec\nFeature: Parameter-Messquelle\nverbesserung, Struktur usw.",
