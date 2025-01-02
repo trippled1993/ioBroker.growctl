@@ -162,7 +162,7 @@
 						{ "label": { "en": "Unten" }, "value": "bottom" },
 						{ "label": { "en": "Mittelwert" }, "value": "mean" }
 					],
-					"label": "ControlLoop Interval (s)",
+					"label": "Messwert-Sensor",
 					"default": "mean",
 					"sm": 2
 				}
