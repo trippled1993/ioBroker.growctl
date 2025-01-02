@@ -67,17 +67,29 @@ export class ScalableInput extends Input {
 	}
 
 	getScaledValue(): number {
-		// Prüfen ob max > min und current zwischen min und max liegt
-		if (this.max <= this.min) {
+		let inverted = false;
+		// Wenn min und max gleich sind, gib -99 zurück -> Fehler
+		if (this.max == this.min) {
 			return -99;
 		}
-		if (this._current < this.min) {
+
+		// Wenn min > max, setze inverted auf true -> Wertebereich ist invertiert
+		if (this.max < this.min) {
+			inverted = true;
+		}
+
+		if ((this._current < this.min && !inverted) || (this._current > this.min && inverted)) {
 			return 0;
 		}
-		if (this._current > this.max) {
+		if ((this._current > this.max && !inverted) || (this._current < this.max && inverted)) {
 			return 100;
 		}
-		return ((this._current - this.min) / (this.max - this.min)) * 100;
+
+		if (!inverted) {
+			return ((this._current - this.min) / (this.max - this.min)) * 100;
+		} else {
+			return 100 - ((this._current - this.min) / (this.max - this.min)) * 100;
+		}
 	}
 	//Überschreibt getter current um skalierten Wert zurückzugeben
 	get current(): any {
