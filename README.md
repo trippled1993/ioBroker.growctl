@@ -161,7 +161,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 MIT License
 
-Copyright (c) 2024 trippled1993 <t.lang93@gmail.com>
+Copyright (c) 2025 trippled1993 <t.lang93@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
