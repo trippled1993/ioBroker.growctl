@@ -259,7 +259,7 @@ export class IODefinitions {
 		for (const io of this.Outputs) {
 			try {
 				if (io.current !== io.desired) {
-					await this.writeIO(io, io.desired, 0, io.IOName != "Heartbeat.ToClient"); //HEARTBEAT nicht loggen
+					await this.writeIO(io, io.desired, 0, io.IOName != "IO.Heartbeat.ToClient.Value"); //HEARTBEAT nicht loggen
 				}
 			} catch (error) {
 				console.error(`Error writing desired state for ${io.WriteOID}:`, error);
