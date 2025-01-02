@@ -259,7 +259,7 @@ export class IODefinitions {
 		for (const io of this.Outputs) {
 			try {
 				if (io.current !== io.desired) {
-					await this.writeIO(io, io.desired);
+					await this.writeIO(io, io.desired, 0, io.IOName != "Heartbeat.ToClient"); //HEARTBEAT nicht loggen
 				}
 			} catch (error) {
 				console.error(`Error writing desired state for ${io.WriteOID}:`, error);
@@ -332,15 +332,23 @@ export class IODefinitions {
 	}
 
 	// Funktion um IO zu schreiben
-	public async writeIO(io: Output, value: any, attempts = 0): Promise<void> {
+	public async writeIO(io: Output, value: any, attempts = 0, log = true): Promise<void> {
 		try {
 			const maxAttempts = 2;
 			const alternativeValue = "--"; // Behelfsmäßiger Wert
 
-			while (attempts <= maxAttempts) {
+			//Nur loggen, wenn log = true oder wenn es ein Wiederholungsversuch ist
+			if (attempts > 0 || log) {
 				this.adapter.log.info(
 					`${this.constructor.name} 	| Wert wird geändert: ${io.WriteOID} von ${io.current} auf ${value} (Versuch ${attempts + 1})`,
 				);
+			} else {
+				this.adapter.log.debug(
+					`${this.constructor.name} 	| Wert wird geändert: ${io.WriteOID} von ${io.current} auf ${value} (Versuch ${attempts + 1})`,
+				);
+			}
+
+			while (attempts <= maxAttempts) {
 				await this.adapter.setForeignStateAsync(io.WriteOID, value);
 				await this.delay(this.writeCheckDelay);
 
