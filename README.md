@@ -16,6 +16,7 @@
 Steuerung der Umgebungsdaten
 
 ### Beispiel Regeln für ESP (Heartbeat)
+
 ```
 Rule1 ON System#Boot DO backlog teleperiod 5; RuleTimer1 5 ENDON ON Rules#Timer=1 DO backlog Publish dp/B01-SEN/heartbeat/toServer %timestamp%; RuleTimer1 5 ENDON
 Rule1 1
@@ -24,7 +25,6 @@ Rule1 1
 Rule2 ON Mem2#State DO backlog var1 %timestamp%; ruletimer2 30 ENDON ON Rules#Timer=2 DO backlog Power1 0; Power2 0; Power3 0; Power4 0; PWM7 0 ENDON
 Rule2 1
 ```
-
 
 ## Developer manual
 
@@ -137,6 +137,18 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+-   Split Output in Read/Write OIDs
+-   feature: Example esp BerryScript SensorBox
+-   Feature: Prozessbeschreibung
+-   Feature: Ist-Wert Validierung
+-   Feature: Feuchtesensoren
+-   Feature: ESP Autoexec
+-   Feature: Parameter MeasurementSource
+-   allgemeine Verbesserungen, Struktur etc.
+
 ### 0.0.2-alpha.1 (2024-07-28)
 
 -   Heartbeat-Manager & Intervall Loop Parameter
