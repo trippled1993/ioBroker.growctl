@@ -12,23 +12,54 @@ export class Setpoint {
 
 import { AdapterInstance } from "@iobroker/adapter-core"; // Importiere den Adapter-Typ
 
-/**
- * Represents a set of desired setpoints for temperature, humidity, lighting duration, and hysteresis.
- */
-/**
- * Klasse, die die Setpoints für Temperatur, Luftfeuchtigkeit, Beleuchtungsdauer und Hysterese speichert.
- */
-export class Setpoints {
+class LightDependentSetpoints {
 	desiredTemperature: Setpoint;
 	desiredHumidity: Setpoint;
-	desiredLightingDuration: Setpoint;
 	desiredTempHysteresis: Setpoint;
 	desiredHumidityHysteresis: Setpoint;
 	maxTemperature: Setpoint;
 	maxHumidity: Setpoint;
 	fanMinPercent: Setpoint;
 	tempDiffThreshold: Setpoint;
-	lightsOnDuration: Setpoint;
+
+	constructor(prefix: string) {
+		this.desiredTemperature = new Setpoint(`${prefix}.DesiredTemperature`, `Gewünschte Temperatur (${prefix})`, 0);
+		this.desiredTempHysteresis = new Setpoint(
+			`${prefix}.DesiredTempHysteresis`,
+			`Gewünschte Temperaturhysterese (${prefix})`,
+			0,
+		);
+		this.maxTemperature = new Setpoint(`${prefix}.MaxTemperature`, `Maximale Temperatur (${prefix})`, 0);
+		this.desiredHumidity = new Setpoint(`${prefix}.DesiredHumidity`, `Gewünschte Luftfeuchtigkeit (${prefix})`, 0);
+		this.desiredHumidityHysteresis = new Setpoint(
+			`${prefix}.DesiredHumidityHysteresis`,
+			`Gewünschte Luftfeuchtigkeithysterese (${prefix})`,
+			0,
+		);
+		this.maxHumidity = new Setpoint(`${prefix}.MaxHumidity`, `Maximale Luftfeuchtigkeit (${prefix})`, 0);
+		this.fanMinPercent = new Setpoint(
+			`${prefix}.FanMinPercent`,
+			`Minimale Lüfterdrehzahl in Prozent (${prefix})`,
+			0,
+		);
+		this.tempDiffThreshold = new Setpoint(
+			`${prefix}.TempDiffThreshold`,
+			`Abweichung von Temperatur oben/unten (${prefix})`,
+			0,
+		);
+	}
+}
+enum LightDependentPrefix {
+	On = "LightOn",
+	Off = "LightOff",
+}
+/**
+ * Klasse, die die Setpoints für Temperatur, Luftfeuchtigkeit, Beleuchtungsdauer und Hysterese speichert.
+ */
+export class Setpoints {
+	LightDependentOn: LightDependentSetpoints;
+	LightDependentOff: LightDependentSetpoints;
+	LightsOnDuration: Setpoint;
 	Moisture1Min: Setpoint;
 	Moisture1Max: Setpoint;
 	Moisture2Min: Setpoint;
@@ -50,32 +81,22 @@ export class Setpoints {
 	 */
 	constructor(adapter: AdapterInstance) {
 		this.adapter = adapter;
-		this.desiredTemperature = new Setpoint("DesiredTemperature", "Gewünschte Temperatur", 0);
-		this.desiredHumidity = new Setpoint("DesiredHumidity", "Gewünschte Luftfeuchtigkeit", 0);
-		this.desiredLightingDuration = new Setpoint("DesiredLightingDuration", "Gewünschte Beleuchtungsdauer", 0);
-		this.desiredTempHysteresis = new Setpoint("DesiredTempHysteresis", "Gewünschte Temperaturhysterese", 0);
-		this.desiredHumidityHysteresis = new Setpoint(
-			"DesiredHumidityHysteresis",
-			"Gewünschte Luftfeuchtigkeithysterese",
-			0,
-		);
-		this.maxTemperature = new Setpoint("MaxTemperature", "Maximale Temperatur", 0);
-		this.maxHumidity = new Setpoint("MaxHumidity", "Maximale Luftfeuchtigkeit", 0);
-		this.fanMinPercent = new Setpoint("FanMinPercent", "Minimale Lüfterdrehzahl in Prozent", 0);
-		this.tempDiffThreshold = new Setpoint("TempDiffThreshold", "Abweichung von Temperatur oben/unten", 0);
-		this.lightsOnDuration = new Setpoint("LightsOnDuration", "Leuchtdauer in Stunden pro Tag", 0);
-		this.Moisture1Min = new Setpoint("Moisture1Min", "Feuchtigkeitssensor 1 Min", 0);
-		this.Moisture1Max = new Setpoint("Moisture1Max", "Feuchtigkeitssensor 1 Max", 0);
-		this.Moisture2Min = new Setpoint("Moisture2Min", "Feuchtigkeitssensor 2 Min", 0);
-		this.Moisture2Max = new Setpoint("Moisture2Max", "Feuchtigkeitssensor 2 Max", 0);
-		this.Moisture3Min = new Setpoint("Moisture3Min", "Feuchtigkeitssensor 3 Min", 0);
-		this.Moisture3Max = new Setpoint("Moisture3Max", "Feuchtigkeitssensor 3 Max", 0);
-		this.Moisture4Min = new Setpoint("Moisture4Min", "Feuchtigkeitssensor 4 Min", 0);
-		this.Moisture4Max = new Setpoint("Moisture4Max", "Feuchtigkeitssensor 4 Max", 0);
-		this.Moisture5Min = new Setpoint("Moisture5Min", "Feuchtigkeitssensor 5 Min", 0);
-		this.Moisture5Max = new Setpoint("Moisture5Max", "Feuchtigkeitssensor 5 Max", 0);
-		this.Moisture6Min = new Setpoint("Moisture6Min", "Feuchtigkeitssensor 6 Min", 0);
-		this.Moisture6Max = new Setpoint("Moisture6Max", "Feuchtigkeitssensor 6 Max", 0);
+		this.LightDependentOn = new LightDependentSetpoints(LightDependentPrefix.On);
+		this.LightDependentOff = new LightDependentSetpoints(LightDependentPrefix.Off);
+
+		this.LightsOnDuration = new Setpoint("LightsOnDuration", "Leuchtdauer in Stunden pro Tag", 0);
+		this.Moisture1Min = new Setpoint("Moisture.1Min", "Feuchtigkeitssensor 1 Min", 0);
+		this.Moisture1Max = new Setpoint("Moisture.1Max", "Feuchtigkeitssensor 1 Max", 0);
+		this.Moisture2Min = new Setpoint("Moisture.2Min", "Feuchtigkeitssensor 2 Min", 0);
+		this.Moisture2Max = new Setpoint("Moisture.2Max", "Feuchtigkeitssensor 2 Max", 0);
+		this.Moisture3Min = new Setpoint("Moisture.3Min", "Feuchtigkeitssensor 3 Min", 0);
+		this.Moisture3Max = new Setpoint("Moisture.3Max", "Feuchtigkeitssensor 3 Max", 0);
+		this.Moisture4Min = new Setpoint("Moisture.4Min", "Feuchtigkeitssensor 4 Min", 0);
+		this.Moisture4Max = new Setpoint("Moisture.4Max", "Feuchtigkeitssensor 4 Max", 0);
+		this.Moisture5Min = new Setpoint("Moisture.5Min", "Feuchtigkeitssensor 5 Min", 0);
+		this.Moisture5Max = new Setpoint("Moisture.5Max", "Feuchtigkeitssensor 5 Max", 0);
+		this.Moisture6Min = new Setpoint("Moisture.6Min", "Feuchtigkeitssensor 6 Min", 0);
+		this.Moisture6Max = new Setpoint("Moisture.6Max", "Feuchtigkeitssensor 6 Max", 0);
 	}
 
 	/**
@@ -83,7 +104,21 @@ export class Setpoints {
 	 * @returns Ein Array von Setpoints.
 	 */
 	public get Points(): Setpoint[] {
-		return Object.values(this).filter((point) => point instanceof Setpoint) as Setpoint[];
+		const points: Setpoint[] = [];
+
+		const addPoints = (obj: any) => {
+			for (const key in obj) {
+				if (obj[key] instanceof Setpoint) {
+					points.push(obj[key]);
+				} else if (obj[key] instanceof LightDependentSetpoints && obj[key] !== null) {
+					addPoints(obj[key]);
+				}
+			}
+		};
+
+		addPoints(this);
+
+		return points;
 	}
 
 	/**
@@ -92,7 +127,8 @@ export class Setpoints {
 	 */
 	public async initializePoints(): Promise<void> {
 		for (const point of this.Points) {
-			await this.adapter.setObjectNotExistsAsync(point.name, {
+			this.adapter.log.debug(`${this.constructor.name} | Sollwert wird initialisiert: ${point.name}`);
+			await this.adapter.setObjectNotExistsAsync(`Setpoint.${point.name}`, {
 				type: "state",
 				common: {
 					name: point.label,

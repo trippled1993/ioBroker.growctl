@@ -8,6 +8,7 @@ import { HeartbeatManager } from "./HeartbeatManager";
 import { IO } from "./Models/IO";
 import { IODefinitions } from "./Models/IODefinitions";
 import { Setpoints } from "./Models/Setpoints";
+import { StatusValues } from "./Models/StatusValues";
 
 const CONTROL_LOOP_INTERVAL_DEFAULT = 5000; // Default interval in milliseconds
 /**
@@ -19,6 +20,7 @@ export class ControlLogic {
 	private interval: NodeJS.Timeout | null = null;
 	private ioDefinitions: IODefinitions;
 	private setpoints: Setpoints;
+	private statusValues: StatusValues;
 	private heartbeatManager: HeartbeatManager;
 	public IsRunning = false;
 	private isClientConnected = false;
@@ -40,6 +42,7 @@ export class ControlLogic {
 		this.config = config;
 		this.ioDefinitions = new IODefinitions(config, adapter);
 		this.setpoints = new Setpoints(adapter);
+		this.statusValues = new StatusValues(adapter);
 		this.heartbeatManager = new HeartbeatManager(
 			adapter,
 			this.ioDefinitions,
@@ -100,6 +103,7 @@ export class ControlLogic {
 			this.processLogic();
 
 			await this.ioDefinitions.writeAllOutputs();
+			await this.statusValues.writeValues();
 		} catch (error) {
 			this.adapter.log.error("Fehler in der Steuerungsschleife: " + error);
 		} finally {
@@ -129,8 +133,10 @@ export class ControlLogic {
 	private processLogic(): void {
 		this.adapter.log.debug(`${this.constructor.name} 	| processLogic gestartet..`);
 
+		// Aktuelle Temperatur- und Feuchtigkeitswerte für die Steuerung bestimmen
 		let controlTemp;
 		let controlHum;
+		let lightDependent;
 		if (this.config.generalSettings.measurementSource === "mean") {
 			controlTemp =
 				(this.ioDefinitions.currentTopTemperature.current +
@@ -146,12 +152,33 @@ export class ControlLogic {
 			controlHum = this.ioDefinitions.currentBottomHumidity.current;
 		}
 
+		//Prüfen ob Licht an oder nicht und dann die entsprechenden Setpoints laden
+		if (this.lampController.IsLightningTime(this.setpoints.LightsOnDuration.currentValue)) {
+			lightDependent = this.setpoints.LightDependentOn;
+		} else {
+			lightDependent = this.setpoints.LightDependentOff;
+		}
+
+		// Statuswerte setzen
+		this.statusValues.ControlTemperature.currentValue = controlTemp;
+		this.statusValues.ControlHumidity.currentValue = controlHum;
+		this.statusValues.DesiredTempMin.currentValue =
+			lightDependent.desiredTemperature.currentValue - lightDependent.desiredTempHysteresis.currentValue;
+		this.statusValues.DesiredTempMax.currentValue =
+			lightDependent.desiredTemperature.currentValue + lightDependent.desiredTempHysteresis.currentValue;
+		this.statusValues.DesiredHumidityMin.currentValue =
+			lightDependent.desiredHumidity.currentValue - lightDependent.desiredHumidityHysteresis.currentValue;
+		this.statusValues.DesiredHumidityMin.currentValue =
+			lightDependent.desiredHumidity.currentValue + lightDependent.desiredHumidityHysteresis.currentValue;
+		this.statusValues.TemperatureMaxMax.currentValue = lightDependent.maxTemperature.currentValue;
+		this.statusValues.HumidityMaxMax.currentValue = lightDependent.maxHumidity.currentValue;
+
 		this.ioDefinitions.heaterOn.desired =
 			this.heatingController.shouldActivate(
 				controlTemp, // temp
-				this.setpoints.desiredTemperature.currentValue, // desiredTemp
-				this.setpoints.desiredTempHysteresis.currentValue, // tempHyst
-				this.setpoints.maxTemperature.currentValue, // maxTemp
+				lightDependent.desiredTemperature.currentValue, // desiredTemp
+				lightDependent.desiredTempHysteresis.currentValue, // tempHyst
+				lightDependent.maxTemperature.currentValue, // maxTemp
 			) > 50;
 		this.adapter.log.debug(`${this.constructor.name} 	| heaterOn: ${this.ioDefinitions.heaterOn.desired}`);
 		this.ioDefinitions.fanPercent.desired = this.fanController.shouldActivate(
@@ -159,29 +186,29 @@ export class ControlLogic {
 			this.ioDefinitions.currentBottomTemperature.current, // tempBottom
 			controlHum, // hum
 			controlTemp, // temp
-			this.setpoints.tempDiffThreshold.currentValue, // tempDiffThreshold
-			this.setpoints.desiredTemperature.currentValue, // desiredTemp
-			this.setpoints.desiredTempHysteresis.currentValue, // tempHyst
-			this.setpoints.maxTemperature.currentValue, // maxTemp
-			this.setpoints.maxHumidity.currentValue, // maxHumidity
-			this.setpoints.fanMinPercent.currentValue, // fanMinPercent
+			lightDependent.tempDiffThreshold.currentValue, // tempDiffThreshold
+			lightDependent.desiredTemperature.currentValue, // desiredTemp
+			lightDependent.desiredTempHysteresis.currentValue, // tempHyst
+			lightDependent.maxTemperature.currentValue, // maxTemp
+			lightDependent.maxHumidity.currentValue, // maxHumidity
+			lightDependent.fanMinPercent.currentValue, // fanMinPercent
 		);
 		this.adapter.log.debug(`${this.constructor.name} 	| fanPercent: ${this.ioDefinitions.fanPercent.desired}`);
 		this.ioDefinitions.dehumidifierOn.desired =
 			this.dehumidifierController.shouldActivate(
 				controlHum, // hum
 				controlTemp, // temp
-				this.setpoints.desiredHumidity.currentValue, // desiredHum
-				this.setpoints.desiredHumidityHysteresis.currentValue, // humHyst
-				this.setpoints.maxTemperature.currentValue, // maxTemp
+				lightDependent.desiredHumidity.currentValue, // desiredHum
+				lightDependent.desiredHumidityHysteresis.currentValue, // humHyst
+				lightDependent.maxTemperature.currentValue, // maxTemp
 			) > 50;
 		this.adapter.log.debug(
 			`${this.constructor.name} 	| dehumidifierOn: ${this.ioDefinitions.dehumidifierOn.desired}`,
 		);
 		this.ioDefinitions.lightOn.desired =
 			this.lampController.shouldActivate(
-				this.setpoints.lightsOnDuration.currentValue, // lightsOnDuration
-				this.setpoints.maxTemperature.currentValue, // maxTemp
+				this.setpoints.LightsOnDuration.currentValue, // lightsOnDuration
+				lightDependent.maxTemperature.currentValue, // maxTemp
 				controlTemp, // temp
 			) > 50;
 		this.adapter.log.debug(`${this.constructor.name} 	| lightOn: ${this.ioDefinitions.lightOn.desired}`);

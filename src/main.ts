@@ -8,6 +8,7 @@ import * as utils from "@iobroker/adapter-core";
 import { AdapterConfig } from "./AdapterConfig";
 import { ControlLogic } from "./ControlLogic";
 import { Setpoints } from "./Models/Setpoints";
+import { StatusValues } from "./Models/StatusValues";
 // Load your modules here, e.g.:
 // import * as fs from "fs";
 
@@ -15,6 +16,7 @@ class Growctl extends utils.Adapter {
 	private ctlConfig: AdapterConfig;
 	private controlLogic: ControlLogic | null = null;
 	private setpoints: Setpoints;
+	private statusValues: StatusValues;
 	public constructor(options: Partial<utils.AdapterOptions> = {}) {
 		super({
 			...options,
@@ -22,6 +24,7 @@ class Growctl extends utils.Adapter {
 		});
 		this.ctlConfig = new AdapterConfig(this);
 		this.setpoints = new Setpoints(this);
+		this.statusValues = new StatusValues(this);
 
 		this.on("ready", this.onReady.bind(this));
 		this.on("stateChange", this.onStateChange.bind(this));
@@ -40,9 +43,23 @@ class Growctl extends utils.Adapter {
 				.initializePoints()
 				.then(() => {
 					console.log("Alle Sollwerte wurden initialisiert.");
+					this.log.info("Alle Sollwerte wurden initialisiert.");
 				})
 				.catch((err) => {
 					console.error("Fehler bei der Initialisierung der Sollwerte:", err);
+					this.log.error("Fehler bei der Initialisierung der Sollwerte:" + err);
+				});
+
+			// Initialisiere alle Statuswerte
+			this.statusValues
+				.initializeStatusValues()
+				.then(() => {
+					console.log("Alle Statuswerte wurden initialisiert.");
+					this.log.info("Alle Statuswerte wurden initialisiert.");
+				})
+				.catch((err) => {
+					console.error("Fehler bei der Initialisierung der Statuswerte:", err);
+					this.log.error("Fehler bei der Initialisierung der Statuswerte:" + err);
 				});
 
 			this.controlLogic = new ControlLogic(this, config);

@@ -141,6 +141,9 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 ### **WORK IN PROGRESS**
 
 -   Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl
+-   Code reorganisiert
+-   Feature: Sollwerte abhänging vom Licht (An/Aus) ändern
+-   Feature: Statuswerte als Objekte ausgeben
 
 ### 1.0.1 (2025-01-02)
 
