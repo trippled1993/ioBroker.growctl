@@ -2,9 +2,11 @@ import { IController } from "./IController";
 
 export class LampController implements IController {
 	private isActive: boolean;
+	private isLocked: boolean;
 
 	constructor() {
 		this.isActive = false; // Initialer Zustand
+		this.isLocked = false; // Initialer Zustand
 	}
 
 	// Prüft, ob es Zeit ist, das Licht einzuschalten
@@ -22,10 +24,17 @@ export class LampController implements IController {
 	}
 
 	public shouldActivate(lightDuration: number, tempMax: number, temp: number): number {
+		// Wenn die Temperatur den Maximalwert überschreitet, sperre die Lampe
+		if (temp >= tempMax) {
+			this.isLocked = true;
+		} else if (temp <= tempMax - 0.5) {
+			this.isLocked = false;
+		}
+
 		this.isActive = this.IsLightningTime(lightDuration);
 
-		// Wenn die durchschnittliche Temperatur den Maximalwert überschreitet, schalte die Lampe aus
-		if (temp > tempMax) {
+		// Wenn die Lampe gesperrt ist, schalte sie aus
+		if (this.isLocked) {
 			this.isActive = false;
 		}
 
