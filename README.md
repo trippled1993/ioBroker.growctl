@@ -137,6 +137,11 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+-   Debug: StatusValues werden nicht geschrieben
+
 ### 2.0.0 (2025-01-04)
 
 -   Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl

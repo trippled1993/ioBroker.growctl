@@ -4,7 +4,7 @@ export class Setpoint {
 	currentValue: number;
 
 	constructor(name: string, label: string, currentValue: number) {
-		this.name = name;
+		this.name = `Setpoint.${name}`;
 		this.label = label;
 		this.currentValue = currentValue;
 	}
@@ -128,7 +128,7 @@ export class Setpoints {
 	public async initializePoints(): Promise<void> {
 		for (const point of this.Points) {
 			this.adapter.log.debug(`${this.constructor.name} | Sollwert wird initialisiert: ${point.name}`);
-			await this.adapter.setObjectNotExistsAsync(`Setpoint.${point.name}`, {
+			await this.adapter.setObjectNotExistsAsync(point.name, {
 				type: "state",
 				common: {
 					name: point.label,

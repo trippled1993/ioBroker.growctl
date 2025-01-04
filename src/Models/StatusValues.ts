@@ -5,7 +5,7 @@ export class StatusValue {
 	currentValue: number;
 
 	constructor(name: string, currentValue: number) {
-		this.name = name;
+		this.name = `Status.${name}`;
 		this.currentValue = currentValue;
 	}
 }
@@ -66,7 +66,7 @@ export class StatusValues {
 	public async initializeStatusValues(): Promise<void> {
 		for (const value of this.Values) {
 			this.adapter.log.debug(`${this.constructor.name} | Statuswert wird initialisiert: ${value.name}`);
-			await this.adapter.setObjectNotExistsAsync(`Status.${value.name}`, {
+			await this.adapter.setObjectNotExistsAsync(value.name, {
 				type: "state",
 				common: {
 					name: `Statuswert: ${value.name}`,
