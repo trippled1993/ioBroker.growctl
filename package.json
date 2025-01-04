@@ -1,6 +1,6 @@
 {
   "name": "iobroker.growctl",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Steuerung der Umgebungsdaten",
   "author": {
     "name": "trippled1993",

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "growctl",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "news": {
+      "2.0.1": {
+        "en": "Debug: StatusValues werden nicht geschrieben",
+        "de": "Debug: StatusValues werden nicht geschrieben",
+        "ru": "Отладка: StatusValues werden nicht geschrieben",
+        "pt": "Debug: StatusValues werden nicht geschrieben",
+        "nl": "Debug: StatusValues werden nicht geschreven",
+        "fr": "Debug: StatusValues werden nicht geschrieben",
+        "it": "Debug: StatusValues werden nicht geschrieben",
+        "es": "Debug: StatusValues werden nicht geschrieben",
+        "pl": "Debug: StatusValues werden nicht geschrieben",
+        "uk": "Дебюг: СтатусВалуси werden nicht geschrieben",
+        "zh-cn": "调试: 状态 Values weden nicht geschrieben"
+      },
       "2.0.0": {
         "en": "Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl\nCode reorganisiert\nFeature: Sollwerte abhänging vom Licht (An/Aus) ändern\nFeature: Statuswerte als Objekte ausgeben\nFeature: Statische Hysterese für MaxMax.Temp/Hum Abschaltung",
         "de": "Bugfix: Überprüfung der Übereinstimmung der Werte\nCode reorganisiert\nFeature: Konzentration abhänging vom Licht (An/Aus) ändern\nFeature: Statuswerte als Objekte ausgeben\nFeature: Statische Hysterese für MaxMax. Temp/Hum Abschaltung",
