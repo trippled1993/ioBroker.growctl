@@ -80,7 +80,7 @@ export class AdapterConfig {
 			this.adapter.getForeignObject("system.adapter." + this.adapter.namespace, (err, obj) => {
 				if (err) {
 					reject("Fehler beim Laden der Konfiguration: " + err);
-				} else if (obj && obj.native) {
+				} else if (obj && obj.native && obj.native.objectIDs && obj.native.objectIDs.currentTopTemperature) {
 					this.config = {
 						objectIDs: {
 							currentTopTemperature: obj.native.objectIDs.currentTopTemperature || "",
