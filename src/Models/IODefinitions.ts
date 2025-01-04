@@ -283,13 +283,20 @@ export class IODefinitions {
 
 	private async isValueWritten(io: Output, value: any): Promise<boolean> {
 		const state = await this.adapter.getForeignStateAsync(io.ReadOID);
-		if (state && state.val === value) {
+		if (state && this.areValuesEqual(state.val, value)) {
 			io.current = state.val;
 			// Wert in IObroker schreiben
 			this.adapter.setState(io.IOName, { val: io.current, ack: true });
 			return true;
 		}
 		return false;
+	}
+	private areValuesEqual(val1: any, val2: any): boolean {
+		const epsilon = 0.00001; // Toleranz für Float-Vergleich
+		if (typeof val1 === "number" && typeof val2 === "number") {
+			return Math.abs(val1 - val2) < epsilon;
+		}
+		return val1 === val2;
 	}
 
 	// Funktion um IO zu lesen, Default parameter "Update"= true. Wenn Update gesetzt, wird auch der Wert in IO aktualisiert, sonst nur zurückgegeben
