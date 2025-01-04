@@ -137,9 +137,11 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
 ### 2.0.1 (2025-01-04)
 
 -   Debug: StatusValues werden nicht geschrieben
+-   Debug: Humidity Min Control Wert falsch angezeigt
 
 ### 2.0.0 (2025-01-04)
 

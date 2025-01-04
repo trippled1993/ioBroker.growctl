@@ -168,7 +168,7 @@ export class ControlLogic {
 			lightDependent.desiredTemperature.currentValue + lightDependent.desiredTempHysteresis.currentValue;
 		this.statusValues.DesiredHumidityMin.currentValue =
 			lightDependent.desiredHumidity.currentValue - lightDependent.desiredHumidityHysteresis.currentValue;
-		this.statusValues.DesiredHumidityMin.currentValue =
+		this.statusValues.DesiredHumidityMax.currentValue =
 			lightDependent.desiredHumidity.currentValue + lightDependent.desiredHumidityHysteresis.currentValue;
 		this.statusValues.TemperatureMaxMax.currentValue = lightDependent.maxTemperature.currentValue;
 		this.statusValues.HumidityMaxMax.currentValue = lightDependent.maxHumidity.currentValue;
