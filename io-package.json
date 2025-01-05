@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "growctl",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "news": {
+      "2.1.1": {
+        "en": "Debug: ScalableOutput",
+        "de": "Debug: ScalableOutput",
+        "ru": "Отладка:",
+        "pt": "Debug: Saída escalável",
+        "nl": "Debug: SchaalbaarUitvoer",
+        "fr": "Débogue: Sortie évolutive",
+        "it": "Debug: ScalableOutput",
+        "es": "Debug: ScalableOutput",
+        "pl": "Debug: skalowalne wyjście",
+        "uk": "Видалити: ScalableOutput",
+        "zh-cn": "调试:可缩放输出"
+      },
       "2.1.0": {
         "en": "Debug: ScalableInput falsch Skaliert\nFeature: ScalableOutput (Fan)",
         "de": "Debug: Skalierbar Input falsch Skaliert\nFeature: ScalableOutput (Fan)",
@@ -80,19 +93,6 @@
         "pl": "Heartbeat- Manager & Intervall Parametr pętli",
         "uk": "Heartbeat-Manager & Інтервелл Параметри",
         "zh-cn": "心跳- 管理 & Intervall 循环参数"
-      },
-      "0.0.2-alpha.0": {
-        "en": "initial release",
-        "de": "erstausstrahlung",
-        "ru": "первоначальный выпуск",
-        "pt": "lançamento inicial",
-        "nl": "eerste release",
-        "fr": "libération initiale",
-        "it": "rilascio iniziale",
-        "es": "liberación inicial",
-        "pl": "początkowe zwolnienie",
-        "uk": "початковий реліз",
-        "zh-cn": "初步释放"
       }
     },
     "title": "GrowController",
