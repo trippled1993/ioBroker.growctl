@@ -137,8 +137,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 2.1.3 (2025-01-05)
 
 -   Change: Lüftersteuerung optimiert
 
