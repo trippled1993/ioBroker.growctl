@@ -260,7 +260,7 @@ export class IODefinitions {
 	public async writeAllOutputs(): Promise<void> {
 		for (const io of this.Outputs) {
 			try {
-				if (io.current !== io.desired) {
+				if (!this.areValuesEqual(io.current, io.desired)) {
 					await this.writeIO(io, io.desired, 0, io.IOName != "IO.Heartbeat.ToClient.Value"); //HEARTBEAT nicht loggen
 				}
 			} catch (error) {
@@ -286,7 +286,11 @@ export class IODefinitions {
 	private async isValueWritten(io: Output, value: any): Promise<boolean> {
 		const state = await this.adapter.getForeignStateAsync(io.ReadOID);
 		if (state && this.areValuesEqual(state.val, value)) {
-			io.current = state.val;
+			if (io instanceof ScalableOutput) {
+				io.setCurrentRaw(state.val);
+			} else {
+				io.current = state.val;
+			}
 			// Wert in IObroker schreiben
 			this.adapter.setState(io.IOName, { val: io.current, ack: true });
 			return true;
@@ -380,7 +384,7 @@ export class IODefinitions {
 						return;
 					} else if (attempts > maxAttempts) {
 						this.adapter.log.error(
-							`${this.constructor.name} 	| Wert konnte nicht geschrieben werden: ${io.WriteOID} von ${io.current} auf ${desiredValue}`,
+							`${this.constructor.name} 	| Wert konnte nicht geschrieben werden: ${io.WriteOID} von ${io.current} auf ${value}`,
 						);
 						return;
 					}

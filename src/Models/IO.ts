@@ -193,6 +193,7 @@ export class ScalableOutput extends Output {
 
 	setCurrentRaw(value: any): void {
 		this._current = value;
+		this.valid = this.isValid(this.scaler.getScaledValue(value));
 	}
 
 	getScaledValue(): number {
