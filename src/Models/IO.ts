@@ -156,6 +156,7 @@ export class ScalableInput extends Input {
 
 export class ScalableOutput extends Output {
 	private scaler: ScaleHelper;
+	private onlyInteger: boolean;
 
 	constructor(
 		name: string,
@@ -165,8 +166,10 @@ export class ScalableOutput extends Output {
 		max: number,
 		defaultValue: any = null,
 		validationFn?: (value: any) => boolean,
+		onlyInteger: boolean = false,
 	) {
 		super(name, readObjectID, writeObjectID, defaultValue, validationFn);
+		this.onlyInteger = onlyInteger;
 		this.scaler = new ScaleHelper(min, max);
 	}
 	get IOName(): string {
@@ -180,24 +183,50 @@ export class ScalableOutput extends Output {
 		return this.getScaledValue();
 	}
 	set current(value: any) {
-		this._current = this.scaler.getRawValue(value);
+		if (this.onlyInteger) {
+			value = Math.round(value);
+		}
+		let val = this.scaler.getRawValue(value);
+		if (this.onlyInteger) {
+			val = Math.round(val);
+		}
+		this._current = val;
 		this.valid = this.isValid(value);
 	}
 
 	get desired(): any {
-		return this.scaler.getScaledValue(this._desired);
+		let val = this.scaler.getScaledValue(this._desired);
+		if (this.onlyInteger) {
+			val = Math.round(val);
+		}
+		return val;
 	}
 	set desired(value: any) {
-		this._desired = this.scaler.getRawValue(value);
+		if (this.onlyInteger) {
+			value = Math.round(value);
+		}
+
+		let val = this.scaler.getRawValue(value);
+		if (this.onlyInteger) {
+			val = Math.round(val);
+		}
+		this._desired = val;
 	}
 
 	setCurrentRaw(value: any): void {
+		if (this.onlyInteger) {
+			value = Math.round(value);
+		}
 		this._current = value;
 		this.valid = this.isValid(this.scaler.getScaledValue(value));
 	}
 
 	getScaledValue(): number {
-		return this.scaler.getScaledValue(this._current);
+		let val = this.scaler.getScaledValue(this._current);
+		if (this.onlyInteger) {
+			val = Math.round(val);
+		}
+		return val;
 	}
 
 	getRawValue(): number {
@@ -205,6 +234,13 @@ export class ScalableOutput extends Output {
 	}
 
 	scaleToRawValue(value: any): number {
-		return this.scaler.getRawValue(value);
+		if (this.onlyInteger) {
+			value = Math.round(value);
+		}
+		let val = this.scaler.getRawValue(value);
+		if (this.onlyInteger) {
+			val = Math.round(val);
+		}
+		return val;
 	}
 }

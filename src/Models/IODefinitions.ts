@@ -147,6 +147,7 @@ export class IODefinitions {
 			1023,
 			0,
 			Validation.isPercent(),
+			true,
 		);
 		this.heartbeatFromClient = new Input("Heartbeat.FromClient", config.objectIDs.heartbeatFromClient);
 		this.heartbeatToClient = new Output(
