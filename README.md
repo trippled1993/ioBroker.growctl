@@ -138,6 +138,10 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 	### **WORK IN PROGRESS**
 -->
 
+### **WORK IN PROGRESS**
+
+-   Debug: ScalableInput falsch Skaliert
+
 ### 2.0.1 (2025-01-04)
 
 -   Debug: StatusValues werden nicht geschrieben

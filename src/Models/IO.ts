@@ -85,11 +85,7 @@ export class ScalableInput extends Input {
 			return 100;
 		}
 
-		if (!inverted) {
-			return ((this._current - this.min) / (this.max - this.min)) * 100;
-		} else {
-			return 100 - ((this._current - this.min) / (this.max - this.min)) * 100;
-		}
+		return ((this._current - this.min) / (this.max - this.min)) * 100;
 	}
 	//Überschreibt getter current um skalierten Wert zurückzugeben
 	get current(): any {
