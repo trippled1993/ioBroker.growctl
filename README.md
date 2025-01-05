@@ -141,6 +141,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 ### **WORK IN PROGRESS**
 
 -   Debug: ScalableInput falsch Skaliert
+-   Feature: ScalableOutput (Fan)
 
 ### 2.0.1 (2025-01-04)
 

@@ -1,7 +1,7 @@
 import { AdapterInstance } from "@iobroker/adapter-core"; // Importiere den Adapter-Typ
 import { IAdapterConfig } from "../AdapterConfig";
 
-import { Input, Output, ScalableInput } from "./IO";
+import { Input, Output, ScalableInput, ScalableOutput } from "./IO";
 
 // Klasse die Funktionen zum generieren von Validierungsfunktionen enthält
 export class Validation {
@@ -47,7 +47,7 @@ export class IODefinitions {
 	heaterOn: Output;
 	lightOn: Output;
 	dehumidifierOn: Output;
-	fanPercent: Output;
+	fanPercent: ScalableOutput;
 	heartbeatFromClient: Input;
 	heartbeatToClient: Output;
 
@@ -139,10 +139,12 @@ export class IODefinitions {
 			false,
 			Validation.isBoolean(),
 		);
-		this.fanPercent = new Output(
+		this.fanPercent = new ScalableOutput(
 			"Output.FanPercent",
 			config.objectIDs.fanPercentRead,
 			config.objectIDs.fanPercentWrite,
+			0,
+			1023,
 			0,
 			Validation.isPercent(),
 		);
@@ -179,7 +181,7 @@ export class IODefinitions {
 	// Als Name des Objekts wird der Instanzname des IOs verwendet
 	// Wenn es ein Output ist, wird der Typ anhand des Default Wertes gesetzt. Sonst auf "number"
 	// Wenn es ein Output ist, wird der Wert beschreibbar gesetzt
-	private async createIOObject(io: ScalableInput | Input | Output): Promise<void> {
+	private async createIOObject(io: ScalableInput | ScalableOutput | Input | Output): Promise<void> {
 		await this.adapter.setObjectNotExistsAsync(io.IOName, {
 			type: "state",
 			common: {
@@ -204,7 +206,7 @@ export class IODefinitions {
 			},
 			native: {},
 		});
-		if (io instanceof ScalableInput) {
+		if (io instanceof ScalableInput || io instanceof ScalableOutput) {
 			await this.adapter.setObjectNotExistsAsync(io.ScaledName, {
 				type: "state",
 				common: {
@@ -305,10 +307,15 @@ export class IODefinitions {
 			const state = await this.adapter.getForeignStateAsync(io.ReadOID);
 			if (state) {
 				if (update) {
-					io.current = state.val;
+					//Wenn Typ ScalableOutput, dann Rohwert schreiben
+					if (io instanceof ScalableOutput) {
+						io.setCurrentRaw(state.val);
+					} else {
+						io.current = state.val;
+					}
 
-					// Wenn Typ ScalableInput, dann auch skalierten Wert schreiben
-					if (io instanceof ScalableInput) {
+					// Wenn Typ Scalable, dann auch skalierten Wert schreiben
+					if (io instanceof ScalableInput || io instanceof ScalableOutput) {
 						this.adapter.setState(io.ScaledName, { val: io.current, ack: true });
 						this.adapter.setState(io.IOName, { val: io.getRawValue(), ack: true });
 					} else {
@@ -343,7 +350,7 @@ export class IODefinitions {
 		try {
 			const maxAttempts = 2;
 			const alternativeValue = "--"; // Behelfsmäßiger Wert
-
+			let desiredValue = value;
 			//Nur loggen, wenn log = true oder wenn es ein Wiederholungsversuch ist
 			if (attempts > 0 || log) {
 				this.adapter.log.info(
@@ -355,11 +362,15 @@ export class IODefinitions {
 				);
 			}
 
+			if (io instanceof ScalableOutput) {
+				desiredValue = io.scaleToRawValue(desiredValue);
+			}
+
 			while (attempts <= maxAttempts) {
-				await this.adapter.setForeignStateAsync(io.WriteOID, value);
+				await this.adapter.setForeignStateAsync(io.WriteOID, desiredValue);
 				await this.delay(this.writeCheckDelay);
 
-				if (await this.isValueWritten(io, value)) {
+				if (await this.isValueWritten(io, desiredValue)) {
 					return; // Wert erfolgreich geschrieben
 				} else {
 					attempts++;
@@ -369,7 +380,7 @@ export class IODefinitions {
 						return;
 					} else if (attempts > maxAttempts) {
 						this.adapter.log.error(
-							`${this.constructor.name} 	| Wert konnte nicht geschrieben werden: ${io.WriteOID} von ${io.current} auf ${value}`,
+							`${this.constructor.name} 	| Wert konnte nicht geschrieben werden: ${io.WriteOID} von ${io.current} auf ${desiredValue}`,
 						);
 						return;
 					}

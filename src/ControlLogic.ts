@@ -113,18 +113,30 @@ export class ControlLogic {
 
 	private setScalabeInputValues(): void {
 		// Min/Max für Skalierbare Eingänge setzen
-		this.ioDefinitions.moistureRaw1.min = this.setpoints.Moisture1Min.currentValue;
-		this.ioDefinitions.moistureRaw1.max = this.setpoints.Moisture1Max.currentValue;
-		this.ioDefinitions.moistureRaw2.min = this.setpoints.Moisture2Min.currentValue;
-		this.ioDefinitions.moistureRaw2.max = this.setpoints.Moisture2Max.currentValue;
-		this.ioDefinitions.moistureRaw3.min = this.setpoints.Moisture3Min.currentValue;
-		this.ioDefinitions.moistureRaw3.max = this.setpoints.Moisture3Max.currentValue;
-		this.ioDefinitions.moistureRaw4.min = this.setpoints.Moisture4Min.currentValue;
-		this.ioDefinitions.moistureRaw4.max = this.setpoints.Moisture4Max.currentValue;
-		this.ioDefinitions.moistureRaw5.min = this.setpoints.Moisture5Min.currentValue;
-		this.ioDefinitions.moistureRaw5.max = this.setpoints.Moisture5Max.currentValue;
-		this.ioDefinitions.moistureRaw6.min = this.setpoints.Moisture6Min.currentValue;
-		this.ioDefinitions.moistureRaw6.max = this.setpoints.Moisture6Max.currentValue;
+		this.ioDefinitions.moistureRaw1.setMinMax(
+			this.setpoints.Moisture1Min.currentValue,
+			this.setpoints.Moisture1Max.currentValue,
+		);
+		this.ioDefinitions.moistureRaw2.setMinMax(
+			this.setpoints.Moisture2Min.currentValue,
+			this.setpoints.Moisture2Max.currentValue,
+		);
+		this.ioDefinitions.moistureRaw3.setMinMax(
+			this.setpoints.Moisture3Min.currentValue,
+			this.setpoints.Moisture3Max.currentValue,
+		);
+		this.ioDefinitions.moistureRaw4.setMinMax(
+			this.setpoints.Moisture4Min.currentValue,
+			this.setpoints.Moisture4Max.currentValue,
+		);
+		this.ioDefinitions.moistureRaw5.setMinMax(
+			this.setpoints.Moisture5Min.currentValue,
+			this.setpoints.Moisture5Max.currentValue,
+		);
+		this.ioDefinitions.moistureRaw6.setMinMax(
+			this.setpoints.Moisture6Min.currentValue,
+			this.setpoints.Moisture6Max.currentValue,
+		);
 	}
 
 	/**

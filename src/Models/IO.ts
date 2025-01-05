@@ -46,63 +46,9 @@ export class Input extends IO {
 		super(name, objectID, validationFn);
 	}
 }
-
-// Klasse ScalableInput erbt von Input. Sie erweitert Input um die Eigenschaften "min" und "max". Der Output erfolgt in %. Min = 0%, Max = 100%. Außerdem wird eine Methode "scale" hinzugefügt.
-export class ScalableInput extends Input {
-	public min: number;
-	public max: number;
-
-	constructor(name: string, objectID: string, min: number, max: number, validationFn?: (value: any) => boolean) {
-		super(name, objectID, validationFn);
-		this.min = min;
-		this.max = max;
-	}
-
-	get IOName(): string {
-		return "IO." + this._name + ".Raw";
-	}
-
-	get ScaledName(): string {
-		return "IO." + this._name + ".Value";
-	}
-
-	getScaledValue(): number {
-		let inverted = false;
-		// Wenn min und max gleich sind, gib -99 zurück -> Fehler
-		if (this.max == this.min) {
-			return -99;
-		}
-
-		// Wenn min > max, setze inverted auf true -> Wertebereich ist invertiert
-		if (this.max < this.min) {
-			inverted = true;
-		}
-
-		if ((this._current < this.min && !inverted) || (this._current > this.min && inverted)) {
-			return 0;
-		}
-		if ((this._current > this.max && !inverted) || (this._current < this.max && inverted)) {
-			return 100;
-		}
-
-		return ((this._current - this.min) / (this.max - this.min)) * 100;
-	}
-	//Überschreibt getter current um skalierten Wert zurückzugeben
-	get current(): any {
-		return this.getScaledValue();
-	}
-	set current(value: any) {
-		this._current = value;
-		this.valid = this.isValid(value);
-	}
-
-	getRawValue(): number {
-		return this._current;
-	}
-}
-
 export class Output extends IO {
-	desired: any;
+	protected _desired: any;
+
 	default: any;
 	private _writeObjectID: string;
 
@@ -115,11 +61,149 @@ export class Output extends IO {
 	) {
 		super(name, readObjectID, validationFn);
 		this._writeObjectID = writeObjectID || readObjectID;
-		this.desired = null;
+		this._desired = null;
 		this.default = defaultValue;
 	}
 
 	get WriteOID(): string {
 		return this._writeObjectID;
+	}
+
+	get desired(): any {
+		return this._desired;
+	}
+	set desired(value: any) {
+		this._desired = value;
+	}
+}
+
+export class ScaleHelper {
+	public min: number;
+	public max: number;
+
+	constructor(min: number, max: number) {
+		this.min = min;
+		this.max = max;
+	}
+
+	getScaledValue(rawValue: number): number {
+		// Wenn min und max gleich sind, gib -99 zurück -> Fehler
+		if (this.max == this.min) return -99;
+
+		// Wenn min > max, setze inverted auf true -> Wertebereich ist invertiert
+		const inverted = this.max < this.min;
+
+		if ((rawValue < this.min && !inverted) || (rawValue > this.min && inverted)) {
+			return 0;
+		}
+		if ((rawValue > this.max && !inverted) || (rawValue < this.max && inverted)) {
+			return 100;
+		}
+		return ((rawValue - this.min) / (this.max - this.min)) * 100;
+	}
+
+	getRawValue(scaledValue: number): number {
+		// Wenn min und max gleich sind, gib -99 zurück -> Fehler
+		if (this.max == this.min) return -99;
+
+		// Wenn min > max, setze inverted auf true -> Wertebereich ist invertiert
+		const inverted = this.max < this.min;
+
+		if ((scaledValue < 0 && !inverted) || (scaledValue > 100 && inverted)) {
+			return this.min;
+		}
+		if ((scaledValue > 100 && !inverted) || (scaledValue < 0 && inverted)) {
+			return this.max;
+		}
+		return (scaledValue / 100) * (this.max - this.min) + this.min;
+	}
+}
+
+export class ScalableInput extends Input {
+	private scaler: ScaleHelper;
+
+	constructor(name: string, objectID: string, min: number, max: number, validationFn?: (value: any) => boolean) {
+		super(name, objectID, validationFn);
+		this.scaler = new ScaleHelper(min, max);
+	}
+	get IOName(): string {
+		return "IO." + this._name + ".Raw";
+	}
+
+	get ScaledName(): string {
+		return "IO." + this._name + ".Value";
+	}
+	get current(): any {
+		return this.getScaledValue();
+	}
+	set current(value: any) {
+		this._current = value;
+		this.valid = this.isValid(value);
+	}
+
+	setMinMax(min: number, max: number): void {
+		this.scaler = new ScaleHelper(min, max);
+	}
+
+	getScaledValue(): number {
+		return this.scaler.getScaledValue(this._current);
+	}
+
+	getRawValue(): number {
+		return this._current;
+	}
+}
+
+export class ScalableOutput extends Output {
+	private scaler: ScaleHelper;
+
+	constructor(
+		name: string,
+		readObjectID: string,
+		writeObjectID: string,
+		min: number,
+		max: number,
+		defaultValue: any = null,
+		validationFn?: (value: any) => boolean,
+	) {
+		super(name, readObjectID, writeObjectID, defaultValue, validationFn);
+		this.scaler = new ScaleHelper(min, max);
+	}
+	get IOName(): string {
+		return "IO." + this._name + ".Raw";
+	}
+
+	get ScaledName(): string {
+		return "IO." + this._name + ".Value";
+	}
+	get current(): any {
+		return this.getScaledValue();
+	}
+	set current(value: any) {
+		this._current = this.scaler.getRawValue(value);
+		this.valid = this.isValid(value);
+	}
+
+	get desired(): any {
+		return this.scaler.getScaledValue(this._desired);
+	}
+	set desired(value: any) {
+		this._desired = this.scaler.getRawValue(value);
+	}
+
+	setCurrentRaw(value: any): void {
+		this._current = value;
+	}
+
+	getScaledValue(): number {
+		return this.scaler.getScaledValue(this._current);
+	}
+
+	getRawValue(): number {
+		return this._current;
+	}
+
+	scaleToRawValue(value: any): number {
+		return this.scaler.getRawValue(value);
 	}
 }

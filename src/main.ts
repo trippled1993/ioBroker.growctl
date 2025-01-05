@@ -66,7 +66,7 @@ class Growctl extends utils.Adapter {
 			// Steuerungslogik initialisieren
 			await this.controlLogic.initialize();
 		} catch (error) {
-			this.log.error("Fehler beim Laden der Konfiguration: " + error);
+			this.log.error("Fehler bei der Initialisierung (main): " + error);
 			if (this.stop) this.stop();
 		}
 	}
