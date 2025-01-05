@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "growctl",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "news": {
+      "2.1.0": {
+        "en": "Debug: ScalableInput falsch Skaliert\nFeature: ScalableOutput (Fan)",
+        "de": "Debug: Skalierbar Input falsch Skaliert\nFeature: ScalableOutput (Fan)",
+        "ru": "Отладка: Input falsch Skaliert\nФункция: ScalableOutput (Fan)",
+        "pt": "Debug: Escalável Input falsch Skaliert\nCaracterística: ScalableOutput (Fan)",
+        "nl": "Debug: schaalbaar Invoer falsch Skaliert\nFunctie: SchaalbaarUitvoer (Fan)",
+        "fr": "Débogue : Scalable Entrée falsch Skaliert\nCaractéristique : Sortie évolutive (Fan)",
+        "it": "Debug: scalabile Input falsch Skaliert\nCaratteristica: ScalableOutput (Fan)",
+        "es": "Debug: escalable Input falsch Skaliert\nCaracterística: ScalableOutput (Fan)",
+        "pl": "Debugowanie: skalowalne Input falsch Skaliert\nCecha: skalowalne wyjście (wentylator)",
+        "uk": "Дебюг: Scalable Вхід фалш Skaliert\nФункція: ScalableOutput (Fan)",
+        "zh-cn": "调试:可缩放 输入 falsch Skaliert\n特征:可伸缩输出(范)"
+      },
       "2.0.1": {
         "en": "Debug: StatusValues werden nicht geschrieben",
         "de": "Debug: StatusValues werden nicht geschrieben",
@@ -80,19 +93,6 @@
         "pl": "początkowe zwolnienie",
         "uk": "початковий реліз",
         "zh-cn": "初步释放"
-      },
-      "0.0.1": {
-        "en": "initial release",
-        "de": "Erstveröffentlichung",
-        "ru": "Начальная версия",
-        "pt": "lançamento inicial",
-        "nl": "Eerste uitgave",
-        "fr": "Première version",
-        "it": "Versione iniziale",
-        "es": "Versión inicial",
-        "pl": "Pierwsze wydanie",
-        "uk": "Початкова версія",
-        "zh-cn": "首次出版"
       }
     },
     "title": "GrowController",
