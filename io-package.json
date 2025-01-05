@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "growctl",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "news": {
+      "2.1.2": {
+        "en": "Debug: ScalableOutput (Integer)",
+        "de": "Debug: ScalableOutput (Integer)",
+        "ru": "Отладка: ScalableOutput (Integer)",
+        "pt": "Debug: Saída escalável (Integer)",
+        "nl": "Debug: ScalableOutput (Integer)",
+        "fr": "Débogue : sortie évolutive (entier)",
+        "it": "Debug: ScalableOutput (Integer)",
+        "es": "Debug: ScalableOutput (Integer)",
+        "pl": "Debug: ScalableOutput (Integer)",
+        "uk": "Дебюг: ScalableOutput (Integer)",
+        "zh-cn": "调试:可缩放输出( 整数)"
+      },
       "2.1.1": {
         "en": "Debug: ScalableOutput",
         "de": "Debug: ScalableOutput",
@@ -80,19 +93,6 @@
         "pl": "Split wyjściowy w odczycie / zapisu OID\nfunkcja: Przykład esp BerryScript SensorBox\nMotyw: Prozessbeschreibung\nCecha: Ist- Wert Validierung\nMotyw: Feuchtesensoren\nCecha: ESP Autoexec\nCecha: Pomiar parametru Źródło\nallgemeine Verbesserungen, Struktur itp.",
         "uk": "Розділіть вихід в Читання / Вписати OIDs\nособливості: Приклад Esp BerryScript SensorBox\nХарактеристика: Prozesbeschreibung\nХарактеристика: Ist-Wert Validierung\nХарактеристика: Feuchtesensoren\nХарактеристика: ESP Autoexec\nХарактеристика: Параметр Вимірювання\nallgemeine Verbesserungen, Struktur і т.д.",
         "zh-cn": "在读/写 OID 中分割输出\n特性 : esp Berry 脚本传感器框\n特征:Prozessbeschreibung\n特征: Ist-Wert viviviierung\n特征: Feuchtesensoren\n特性: ESP 自动执行\n特征: 参数测量来源\n(原始内容存档于2018-09-26). Allgemeine Verbesserungen, Struktur等."
-      },
-      "0.0.2-alpha.1": {
-        "en": "Heartbeat-Manager & Intervall Loop Parameter",
-        "de": "Herzschlag-Manager & Intervall Loop Parameter",
-        "ru": "Heartbeat-Manager & Intervall Параметр Loop",
-        "pt": "Heartbeat-Manager & Intervall Parâmetro de Loop",
-        "nl": "Heartbeat-Manager & Intervall Loopparameter",
-        "fr": "Heartbeat-Manager & Intervall Paramètre de boucle",
-        "it": "Heartbeat-Manager & Intervall Parametro Loop",
-        "es": "Heartbeat-Manager \" Intervall Parámetro del bucle",
-        "pl": "Heartbeat- Manager & Intervall Parametr pętli",
-        "uk": "Heartbeat-Manager & Інтервелл Параметри",
-        "zh-cn": "心跳- 管理 & Intervall 循环参数"
       }
     },
     "title": "GrowController",
