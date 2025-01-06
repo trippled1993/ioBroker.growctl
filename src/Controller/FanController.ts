@@ -34,9 +34,9 @@ export class FanController implements IController {
 		// Zweiter Fall: Temperatur zu hoch. Lüfter abhängig von Temperaturabweichung regeln.
 		const tempExcess = temp - desiredTemp;
 		// Temperatur übersteigt hysterese oder Lüfter wurde bereits eingeschaltet
-		if (temp > desiredTemp || wasOnByTemp) {
-			// Regelung Lüfter zwischen 20 & 100% (100% bei Hysterese)
-			fanSpeedTemp = Math.min(100, 20 + (tempExcess / tempHyst) * 80);
+		if (temp >= desiredTemp + tempHyst || wasOnByTemp) {
+			// Regelung Lüfter zwischen 20 & 100% (100% bei 1,25xHysterese)
+			fanSpeedTemp = Math.min(100, 20 + (tempExcess / (tempHyst * 1.25)) * 80);
 			wasOnByTemp = true;
 		}
 		// Bei unterschreiten der Hysterese, Flag zurücksetzen
