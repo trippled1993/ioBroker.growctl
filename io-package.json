@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "growctl",
-    "version": "2.1.3",
+    "version": "2.1.4",
     "news": {
+      "2.1.4": {
+        "en": "Debug: Lüftersteuerung",
+        "de": "Debug: Die Zukunft",
+        "ru": "Отладка: Lüftersteuerung",
+        "pt": "Debug: Lüftersteuerung",
+        "nl": "Debug: Lüftersteuerung",
+        "fr": "Débogue: Lüftersteuerung",
+        "it": "Debug: Lüftersteuerung",
+        "es": "Debug: Lüftersteuerung",
+        "pl": "Debug: Lüftersteuerung",
+        "uk": "Дебюг: Люфтерстєуернг",
+        "zh-cn": "调试: Lüftersteurung"
+      },
       "2.1.3": {
         "en": "Change: Lüftersteuerung optimiert",
         "de": "Änderung: Lüftersteuerung optimiert",
@@ -80,19 +93,6 @@
         "pl": "Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl\nKod reorganisiert\nMotyw: Sollwerte abhänging vom Licht (An / Aus) ändern\nMotyw: Statuswerte als Objekte ausgeben\nCecha: Statische Hysterese für MaxMax. Temperatura / Hum Abschaltung",
         "uk": "Помилки: Überprüfung ob werte geschrieben wurden schlug bei Float werten fehl\nКод reorganisiert\nХарактеристика: Sollwerte abhänging vom Licht (An/Aus) ändern\nХарактеристика: Статусwerte als Objekte ausgeben\nХарактеристика: Statische Hysterese für MaxMax. Temp/Hum Абшальтунг",
         "zh-cn": "错误修正 : (原始内容存档于2018-06-26). Uberprüfung ob Werte geschrieben wurden schlug bei Float Werten fehl\n代码重组\n特点:索尔韦特州(An/Aus)\n地物: 欧布杰克特岛\n特征: Statische Hysterese für MaxMax. 中国植物物种信息数据库. 时间/月度"
-      },
-      "1.0.1": {
-        "en": "Debug Log\nDebug Labels\nDebug Scaled Values",
-        "de": "Einloggen\nIn den Warenkorb\nDebug Skalierte Werte",
-        "ru": "Журнал\nОтладочные этикетки\nОтладка",
-        "pt": "Log de depuração\nEtiquetas de depuração\nValores dimensionados de depuração",
-        "nl": "Debuglog\nDebug-labels\nDebuggeschaalde waarden",
-        "fr": "Registre de débogage\nÉtiquettes de débogage\nValeurs de débogage",
-        "it": "Debug Log\nEtichette di debito\nValori scalati del debito",
-        "es": "Debug Log\nDebug Labels\nDebug Valores escalados",
-        "pl": "Dziennik debugowania\nEtykiety debugowania\nWartości skalowane",
-        "uk": "Логін\nЕтикетки Debug\nDebug масштабовані значення",
-        "zh-cn": "除错日志\n调试标签\n调试缩放值"
       }
     },
     "title": "GrowController",
