@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "growctl",
-    "version": "2.1.4",
+    "version": "2.1.5",
     "news": {
+      "2.1.5": {
+        "en": "Debug: Lüftersteuerung",
+        "de": "Debug: Die Zukunft",
+        "ru": "Отладка: Lüftersteuerung",
+        "pt": "Debug: Lüftersteuerung",
+        "nl": "Debug: Lüftersteuerung",
+        "fr": "Débogue: Lüftersteuerung",
+        "it": "Debug: Lüftersteuerung",
+        "es": "Debug: Lüftersteuerung",
+        "pl": "Debug: Lüftersteuerung",
+        "uk": "Дебюг: Люфтерстєуернг",
+        "zh-cn": "调试: Lüftersteurung"
+      },
       "2.1.4": {
         "en": "Debug: Lüftersteuerung",
         "de": "Debug: Die Zukunft",
@@ -80,19 +93,6 @@
         "pl": "Debug: StatusValues werden nicht geschrieben",
         "uk": "Дебюг: СтатусВалуси werden nicht geschrieben",
         "zh-cn": "调试: 状态 Values weden nicht geschrieben"
-      },
-      "2.0.0": {
-        "en": "Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl\nCode reorganisiert\nFeature: Sollwerte abhänging vom Licht (An/Aus) ändern\nFeature: Statuswerte als Objekte ausgeben\nFeature: Statische Hysterese für MaxMax.Temp/Hum Abschaltung",
-        "de": "Bugfix: Überprüfung der Übereinstimmung der Werte\nCode reorganisiert\nFeature: Konzentration abhänging vom Licht (An/Aus) ändern\nFeature: Statuswerte als Objekte ausgeben\nFeature: Statische Hysterese für MaxMax. Temp/Hum Abschaltung",
-        "ru": "Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl\nРеорганизует код\nОсобенность: Sollwerte abhänging vom Licht (An/Aus) ändern\nФункция: Statuswerte als Objekte ausgeben\nФункция: Statische Hysterese für MaxMax. Temp/Hum Abschaltung",
-        "pt": "Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl\nCódigo de reorganização\nCaracterística: Sollwerte abhänging vom Licht (An/Aus) ändern\nCaracterística: Statuswerte als Objekte ausgeben\nCaracterística: Statische Hysterese für Max. Temp/Hum Abschaltung",
-        "nl": "Bugfix: Überprüfung ob Werte geschreven wurden schlug bei Float werden fehl\nCode reorganisiert\nFunctie: Sollwerte abhänging vom Licht (An/Aus)ändern\nFunctie: Statuswerte als Objekte ausgeben\nFeature: Statische Hysterese für MaxMax. Temp/Hum Abschaltung",
-        "fr": "Correction : Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl\nRéorganisation du code\nCaractéristiques: Sollwerte abhänging vom Licht (An/Aus) ändern\nCaractéristique: Statuswerte als Objekte ausgeben\nCaractéristiques: Statische Hysterese für MaxMax. Temp/Hum Abschaltung",
-        "it": "Bugfix: Überprüfung ob Werte geschrieben\nCodice di riorganizzazione\nCaratteristica: Sollwerte abhänging vom Licht (An/Aus) ändern\nCaratteristica: Statuswerte als Objekte ausgeben\nCaratteristica: Statische Hysterese für MaxMax. Temp/Hum Abschaltung",
-        "es": "Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl\nCode reorganisiert\nCaracterística: Sollwerte abhänging vom Licht (An/Aus) ändern\nCaracterística: Statuswerte als Objekte ausgeben\nCaracterística: Statische Hysterese für MaxMax. Temporada/Hum Abschaltung",
-        "pl": "Bugfix: Überprüfung ob Werte geschrieben wurden schlug bei Float werten fehl\nKod reorganisiert\nMotyw: Sollwerte abhänging vom Licht (An / Aus) ändern\nMotyw: Statuswerte als Objekte ausgeben\nCecha: Statische Hysterese für MaxMax. Temperatura / Hum Abschaltung",
-        "uk": "Помилки: Überprüfung ob werte geschrieben wurden schlug bei Float werten fehl\nКод reorganisiert\nХарактеристика: Sollwerte abhänging vom Licht (An/Aus) ändern\nХарактеристика: Статусwerte als Objekte ausgeben\nХарактеристика: Statische Hysterese für MaxMax. Temp/Hum Абшальтунг",
-        "zh-cn": "错误修正 : (原始内容存档于2018-06-26). Uberprüfung ob Werte geschrieben wurden schlug bei Float Werten fehl\n代码重组\n特点:索尔韦特州(An/Aus)\n地物: 欧布杰克特岛\n特征: Statische Hysterese für MaxMax. 中国植物物种信息数据库. 时间/月度"
       }
     },
     "title": "GrowController",
