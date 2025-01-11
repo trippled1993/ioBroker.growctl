@@ -2,7 +2,7 @@ import { AdapterInstance } from "@iobroker/adapter-core";
 import { IAdapterConfig } from "./AdapterConfig";
 import { DehumidifierController } from "./Controller/DehumidifierController";
 import { FanController } from "./Controller/FanController";
-import { HeatingController } from "./Controller/HeatingController";
+import { HeatingControllerPID } from "./Controller/HeatingControllerPID";
 import { LampController } from "./Controller/LampController";
 import { HeartbeatManager } from "./HeartbeatManager";
 import { IO } from "./Models/IO";
@@ -27,7 +27,7 @@ export class ControlLogic {
 	private isInitialized = false;
 	private isControlLoopRunning = false;
 
-	private heatingController: HeatingController;
+	private heatingController: HeatingControllerPID;
 	private fanController: FanController;
 	private dehumidifierController: DehumidifierController;
 	private lampController: LampController;
@@ -49,7 +49,7 @@ export class ControlLogic {
 			config,
 			this.handleHeartbeatChange.bind(this),
 		);
-		this.heatingController = new HeatingController();
+		this.heatingController = new HeatingControllerPID();
 		this.fanController = new FanController();
 		this.dehumidifierController = new DehumidifierController();
 		this.lampController = new LampController();
@@ -189,8 +189,12 @@ export class ControlLogic {
 			this.heatingController.shouldActivate(
 				controlTemp, // temp
 				lightDependent.desiredTemperature.currentValue, // desiredTemp
-				lightDependent.desiredTempHysteresis.currentValue, // tempHyst
 				lightDependent.maxTemperature.currentValue, // maxTemp
+				lightDependent.tempKp.currentValue, // tempKp
+				lightDependent.tempKi.currentValue, // tempKi
+				lightDependent.heaterMinOnTime.currentValue, // heaterMinOnTime
+				lightDependent.heaterMinOffTime.currentValue, // heaterMinOffTime
+				lightDependent.tempCycleTime.currentValue, // tempCycleTime
 			) > 50;
 		this.adapter.log.debug(`${this.constructor.name} 	| heaterOn: ${this.ioDefinitions.heaterOn.desired}`);
 		this.ioDefinitions.fanPercent.desired = this.fanController.shouldActivate(

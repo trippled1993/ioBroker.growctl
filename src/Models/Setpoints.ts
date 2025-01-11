@@ -14,6 +14,11 @@ import { AdapterInstance } from "@iobroker/adapter-core"; // Importiere den Adap
 
 class LightDependentSetpoints {
 	desiredTemperature: Setpoint;
+	tempKi: Setpoint;
+	tempKp: Setpoint;
+	tempCycleTime: Setpoint;
+	heaterMinOnTime: Setpoint;
+	heaterMinOffTime: Setpoint;
 	desiredHumidity: Setpoint;
 	desiredTempHysteresis: Setpoint;
 	desiredHumidityHysteresis: Setpoint;
@@ -24,6 +29,23 @@ class LightDependentSetpoints {
 
 	constructor(prefix: string) {
 		this.desiredTemperature = new Setpoint(`${prefix}.DesiredTemperature`, `Gewünschte Temperatur (${prefix})`, 0);
+		this.tempKi = new Setpoint(`${prefix}.TemperatureKi`, `Temperatur PID Ki (${prefix})`, 0.1);
+		this.tempKp = new Setpoint(`${prefix}.TemperatureKi`, `Temperatur PID Kp (${prefix})`, 2);
+		this.tempCycleTime = new Setpoint(
+			`${prefix}.TemperatureCycleTime`,
+			`Temperatur PID Zykluszeit (s) (${prefix})`,
+			60,
+		);
+		this.heaterMinOnTime = new Setpoint(
+			`${prefix}.HeaterMinOnTime`,
+			`Heizung Mindestdauer ein (s) (${prefix})`,
+			30,
+		);
+		this.heaterMinOffTime = new Setpoint(
+			`${prefix}.HeaterMinOffTime`,
+			`Heizung Mindestdauer aus (s) (${prefix})`,
+			30,
+		);
 		this.desiredTempHysteresis = new Setpoint(
 			`${prefix}.DesiredTempHysteresis`,
 			`Gewünschte Temperaturhysterese (${prefix})`,
